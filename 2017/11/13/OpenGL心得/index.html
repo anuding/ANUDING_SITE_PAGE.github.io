@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>OpenGL心得 | /#ANUDING_SITE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这一周已经是在挤时间学习OpenGL了,其他事情也很多,不过不值得写.">
+<meta name="keywords" content="周记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenGL心得">
+<meta property="og:url" content="http://yoursite.com/2017/11/13/OpenGL心得/index.html">
+<meta property="og:site_name" content="&#x2F;#ANUDING_SITE">
+<meta property="og:description" content="这一周已经是在挤时间学习OpenGL了,其他事情也很多,不过不值得写.">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/assets/blog_img/2017-11-12-oneplus3.JPG">
+<meta property="og:updated_time" content="2017-12-01T09:14:11.529Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenGL心得">
+<meta name="twitter:description" content="这一周已经是在挤时间学习OpenGL了,其他事情也很多,不过不值得写.">
+<meta name="twitter:image" content="http://yoursite.com/assets/blog_img/2017-11-12-oneplus3.JPG">
+  
+    <link rel="alternate" href="/atom.xml" title="/#ANUDING_SITE" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">/#ANUDING_SITE</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-OpenGL心得" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/13/OpenGL心得/" class="article-date">
+  <time datetime="2017-11-13T12:56:51.000Z" itemprop="datePublished">2017-11-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OpenGL心得
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blog_img/2017-11-12-oneplus3.JPG" width="500"></p>
+
+<p>这一周已经是在挤时间学习OpenGL了,其他事情也很多,不过不值得写.</p>
+<a id="more"></a>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>本人使用C++进行学习与开发,WIN10-1709,VS2017-community</p>
+<p>在此基础上,去OpenGL的相关站点下载名为beta37的压缩包,包含5个文件,其中两个.h头文件,放入MSVC内的include文件夹内,.lib放入lib文件夹内  .dll放入SYStem32或SYSTEMWOW.</p>
+<p>这样只需要在VS中新建空项目,在开头即可引用  </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include &lt;glut.h&gt;</span><br></pre></td></tr></table></figure>
+<p>这个glut是一个非常有用的工具箱,在学习初期可以节约不少时间.</p>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>要想显示一个物体,得先有一个显示物体的地方,我们得建立一个窗口.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myDisplay</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">     glFlush();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    glutInit(&amp;argc, argv);<span class="comment">//现在先就这么写</span></span><br><span class="line">    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);<span class="comment">//显示模式RGB,双缓冲模式</span></span><br><span class="line">    glutInitWindowPosition(<span class="number">100</span>, <span class="number">100</span>);<span class="comment">//定义窗口位置</span></span><br><span class="line">    glutInitWindowSize(<span class="number">400</span>, <span class="number">400</span>);<span class="comment">//定义窗口大小</span></span><br><span class="line">    glutCreateWindow(<span class="string">"OpenGL"</span>);<span class="comment">//定义窗口标题</span></span><br><span class="line"></span><br><span class="line">    glutDisplayFunc(&amp;display);<span class="comment">//当需要绘制时,调用我们自己写的display绘制函数</span></span><br><span class="line">    glutMainLoop();<span class="comment">//让所有与事件相关的函数无限循环,比如绘制,鼠标移动,放大缩小等等...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在运行一下,会显示出一个窗口.<br>那么,通过这个程序及其注释,我们可以知道,OpenGL程序主要就是两部分,一是main主函数,二是通过glutDisplayFunc调用的自己写的函数,主要都是在这个函数里为所欲为.</p>
+<p>###在display()中为所欲为<br>接下来关注display()函数:</p>
+<p>头图来自Canon EOS 70D–上周摄影作业</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/11/13/OpenGL心得/" data-id="cjmswpj0s0004e0szzx9ryr08" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/周记/">周记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/14/2017-12-14-搭建简易的视频摘要系统/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          搭建简易的视频摘要系统
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 20px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/10/03/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/18/2018微软创新杯ImagineCup小记/">2018微软创新杯ImagineCup小记</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/14/2017-12-14-搭建简易的视频摘要系统/">搭建简易的视频摘要系统</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/13/OpenGL心得/">OpenGL心得</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 ANUDING<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
