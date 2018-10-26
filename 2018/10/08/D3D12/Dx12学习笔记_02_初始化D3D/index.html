@@ -5,15 +5,20 @@
   
 
   
-  <title>Tag: Microsoft | #ANUDING_SITE</title>
+  <title>Dx12学习笔记_02_初始化 | #ANUDING_SITE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="#ANUDING_SITE">
-<meta property="og:url" content="http://yoursite.com/tags/Microsoft/index.html">
+  <meta name="description" content="DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 1. 创建设备(device)无论如何,第一步一定是创建一个设备,这个device实际上代表了一个显示适配器,比如说你的显卡.当">
+<meta name="keywords" content="DirectX,Windows">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dx12学习笔记_02_初始化">
+<meta property="og:url" content="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/index.html">
 <meta property="og:site_name" content="#ANUDING_SITE">
+<meta property="og:description" content="DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 1. 创建设备(device)无论如何,第一步一定是创建一个设备,这个device实际上代表了一个显示适配器,比如说你的显卡.当">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-10-26T13:20:16.490Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="#ANUDING_SITE">
+<meta name="twitter:title" content="Dx12学习笔记_02_初始化">
+<meta name="twitter:description" content="DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 1. 创建设备(device)无论如何,第一步一定是创建一个设备,这个device实际上代表了一个显示适配器,比如说你的显卡.当">
   
     <link rel="alternate" href="/atom.xml" title="#ANUDING_SITE" type="application/atom+xml">
   
@@ -62,40 +67,57 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/05/18/2018微软创新杯ImagineCup小记/" class="archive-article-date">
-  <time datetime="2018-05-18T15:25:33.000Z" itemprop="datePublished">May 18</time>
+        <section id="main"><article id="post-D3D12/Dx12学习笔记_02_初始化D3D" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/" class="article-date">
+  <time datetime="2018-10-08T12:56:51.000Z" itemprop="datePublished">2018-10-08</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/18/2018微软创新杯ImagineCup小记/">2018微软创新杯ImagineCup小记</a>
+    <h1 class="article-title" itemprop="name">
+      Dx12学习笔记_02_初始化
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升.</p>
+<h2 id="1-创建设备-device"><a href="#1-创建设备-device" class="headerlink" title="1. 创建设备(device)"></a>1. 创建设备(device)</h2><p>无论如何,第一步一定是创建一个设备,这个device实际上代表了一个显示适配器,比如说你的显卡.当然想要使用这个device的话,你的显卡必须支持DX12. 我的电脑是神舟战神Z7, 显卡为GTX 970M, 并且我已经在BIOS里开启了纯独立显卡模式, 但是在适配器轮询的结果中却会显示两条结果: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">***Adapter: NVIDIA GeForce GTX 970M</span><br><span class="line">***Adapter: Microsoft Basic Render Driver</span><br></pre></td></tr></table></figure>
+<p>第二条是操作系统自带的软件实现的适配器,如果你的显卡不支持DX12那么创建device的时候就需要轮询查找直到找到一个支持的adapter,而这个软件实现的是一定支持的,只不过性能较硬件实现比较差就是了.</p>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/" data-id="cjnq1e0v10001p4sz5np6n0rj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Dx12学习笔记_01_结构设计</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
