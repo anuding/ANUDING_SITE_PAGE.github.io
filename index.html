@@ -64,9 +64,52 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-D3D12/Dx12学习笔记_02_初始化D3D" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-D3D12/Dx12学习笔记_03_初始化D3D下" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/" class="article-date">
+    <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" class="article-date">
+  <time datetime="2018-10-30T12:09:51.000Z" itemprop="datePublished">2018-10-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>书接上回, 现在Initial3D已经只剩下一个函数需要完成了,其余的初始化因为和窗口尺寸关系比较大,所以单独放在OnResize()里, 便于响应窗口消息
+        
+          <p class="article-more-link">
+            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" data-id="cjnvozp4x00002wszgt5oaln2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-D3D12/Dx12学习笔记_02_初始化D3D上" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" class="article-date">
   <time datetime="2018-10-08T12:56:51.000Z" itemprop="datePublished">2018-10-08</time>
 </a>
     
@@ -78,7 +121,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/">Dx12学习笔记_02_初始化</a>
+      <a class="article-title" href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
     </h1>
   
 
@@ -86,15 +129,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升.</p>
-<h2 id="1-创建设备-device"><a href="#1-创建设备-device" class="headerlink" title="1. 创建设备(device)"></a>1. 创建设备(device)</h2><p>无论如何,第一步一定是创建一个设备,这个device实际上代表了一个显示适配器,比如说你的显卡.当然想要使用这个device的话,你的显卡必须支持DX12. 我的电脑是神舟战神Z7, 显卡为GTX 970M, 并且我已经在BIOS里开启了纯独立显卡模式, 但是在适配器轮询的结果中却会显示两条结果: </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">***Adapter: NVIDIA GeForce GTX 970M</span><br><span class="line">***Adapter: Microsoft Basic Render Driver</span><br></pre></td></tr></table></figure>
-<p>第二条是操作系统自带的软件实现的适配器,如果你的显卡不支持DX12那么创建device的时候就需要轮询查找直到找到一个支持的adapter,而这个软件实现的是一定支持的,只不过性能较硬件实现比较差就是了.</p>
-
+        <p>DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 初始化的内容按照龙书第四章第三节所述,分为10步, 同时也会穿插一部分第四章前两节的内容
+        
+          <p class="article-more-link">
+            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/" data-id="cjnq1e0v10001p4sz5np6n0rj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" data-id="cjnvozp5300012wszoc700aqw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -128,13 +172,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. 下面就尝试重构先前的代码</p>
-<h2 id="1-概"><a href="#1-概" class="headerlink" title="1. 概"></a>1. 概</h2><p>现在先将</p>
-
+        <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. </p>
+        
+          <p class="article-more-link">
+            <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjnq1e0ut0000p4sz96ob557y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjnsw7ptx000n9csz0vrg6hyj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -178,7 +225,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" data-id="cjmup7kf60001kwszkxkjmk5y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" data-id="cjnsw7ptu000l9csz9ollmbd6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -225,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/03/hello-world/" data-id="cjmt31kns0005dksz735nbc49" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/03/hello-world/" data-id="cjnsw7pp000029cszwgy6f2z0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -268,7 +315,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/2018微软创新杯ImagineCup小记/" data-id="cjmt31knl0002dksz3gtvxwp8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/2018微软创新杯ImagineCup小记/" data-id="cjnsw7pow00019cszushbopql" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编程/">编程</a></li></ul>
@@ -314,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/12/14/2017-12-14-搭建简易的视频摘要系统/" data-id="cjmt31knf0001dksz7uh8tqdd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/12/14/2017-12-14-搭建简易的视频摘要系统/" data-id="cjnsw7psx000b9cszfhr8vauz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/周记/">周记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图像处理/">图像处理</a></li></ul>
@@ -359,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/13/OpenGL心得/" data-id="cjmt31knq0004dksz1ig3wg0w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/13/OpenGL心得/" data-id="cjnsw7ptt000k9csznyx2wkmp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/周记/">周记</a></li></ul>
@@ -416,7 +463,11 @@
       <ul>
         
           <li>
-            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/">Dx12学习笔记_02_初始化</a>
+            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
           </li>
         
           <li>
@@ -429,10 +480,6 @@
         
           <li>
             <a href="/2018/10/03/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/2018/05/18/2018微软创新杯ImagineCup小记/">2018微软创新杯ImagineCup小记</a>
           </li>
         
       </ul>

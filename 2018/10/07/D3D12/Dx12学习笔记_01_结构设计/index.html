@@ -7,18 +7,18 @@
   
   <title>Dx12学习笔记_01_结构设计 | #ANUDING_SITE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. 下面就尝试重构先前的代码 1. 概现在先将">
+  <meta name="description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来.">
 <meta name="keywords" content="DirectX,Windows">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dx12学习笔记_01_结构设计">
 <meta property="og:url" content="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/index.html">
 <meta property="og:site_name" content="#ANUDING_SITE">
-<meta property="og:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. 下面就尝试重构先前的代码 1. 概现在先将">
+<meta property="og:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-26T13:20:11.333Z">
+<meta property="og:updated_time" content="2018-10-28T13:13:50.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_01_结构设计">
-<meta name="twitter:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. 下面就尝试重构先前的代码 1. 概现在先将">
+<meta name="twitter:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来.">
   
     <link rel="alternate" href="/atom.xml" title="#ANUDING_SITE" type="application/atom+xml">
   
@@ -89,13 +89,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. 下面就尝试重构先前的代码</p>
-<h2 id="1-概"><a href="#1-概" class="headerlink" title="1. 概"></a>1. 概</h2><p>现在先将</p>
+        <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. </p>
+<a id="more"></a>
+<h2 id="1-What-to-do"><a href="#1-What-to-do" class="headerlink" title="1. What to do?"></a>1. What to do?</h2><p>现在先将整个程序分为两个类,一个是D3DApp类,包括Win32窗口的创建和Dx12管线的初始化等操作, 另一个是        TestApp类,继承自D3DApp, 用以实现渲染:</p>
+<p>D3DApp中, public类成员全部都是类的对象对外暴露的接口, 所有操作通过调用这些public方法完成. </p>
+<p>TestApp除了构造函数, 其余函数均为private, 并且复写D3DApp中的虚函数</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjnq1e0ut0000p4sz96ob557y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjnsw7ptx000n9csz0vrg6hyj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -106,11 +109,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Dx12学习笔记_02_初始化
+          Dx12学习笔记_02_初始化上
         
       </div>
     </a>
@@ -169,7 +172,11 @@
       <ul>
         
           <li>
-            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/">Dx12学习笔记_02_初始化</a>
+            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
           </li>
         
           <li>
@@ -182,10 +189,6 @@
         
           <li>
             <a href="/2018/10/03/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/2018/05/18/2018微软创新杯ImagineCup小记/">2018微软创新杯ImagineCup小记</a>
           </li>
         
       </ul>

@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="1. 创建窗口类(大)部分内容参考 https://docs.microsoft.com/zh-cn/windows/desktop/learnwin32/creating-a-window Every window must be associated with a window class, even if your program only ever creates one instance">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-26T13:20:03.749Z">
+<meta property="og:updated_time" content="2018-10-28T13:22:06.593Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_00_窗口">
 <meta name="twitter:description" content="1. 创建窗口类(大)部分内容参考 https://docs.microsoft.com/zh-cn/windows/desktop/learnwin32/creating-a-window Every window must be associated with a window class, even if your program only ever creates one instance">
@@ -98,7 +98,7 @@
 <p><strong>lpszClassName</strong> 定义了窗口类的名字</p>
 <p>暂时就这些, 把WNDCLASS这个结构体的地址传给注册函数RegisterClass:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RegisterClass(&amp;wc);</span><br></pre></td></tr></table></figure>
-<p>再通过 <a href="https://msdn.microsoft.com/library/windows/desktop/ms632680" target="_blank" rel="noopener"><strong>CreateWindowEx</strong></a>  创建窗口实例. CreateWindowEx的参数比较多, 这里只说几个常用的:</p>
+<p>再通过 <a href="https://msdn.microsoft.com/library/windows/desktop/ms632680" target="_blank" rel="noopener"><strong>CreateWindowEx</strong></a>  创建窗口实例, 返回值赋给句柄变量<strong>mhMainWnd</strong> . CreateWindowEx的参数比较多, 这里只说几个常用的:</p>
 <p>第二个参数lpClassName, 可以理解为窗口的名字</p>
 <p>第三个参数lpWindowName, 可以理解为title的内容</p>
 <p>倒数第二个参数hInstance, 这个hInstance是一个句柄型数据,用来区别一个程序的不同实例(多开),这个参数就是我们wWinMain中的第一个参数.</p>
@@ -109,8 +109,10 @@
 <p>比如按下左键,那么触发事件0x0201 WM_LBUTTONDOWN,     </p>
 <p>应用程序需要抓取到所有的消息并分配(dispatch)给正确的窗口. 对于每个创建窗口的线程,    都需要维护一个<strong>消息队列</strong> , 该队列存储着该线程上产生的所有操作. 通过 <a href="https://msdn.microsoft.com/library/windows/desktop/ms644936" target="_blank" rel="noopener"><strong>GetMessage</strong></a> (只返回True/False)拉取一条消息,这将删除队列头部的一条消息,当队列中没有操作时,这个函数会停止,不过这并不会把你的程序搞死(如果要在后台工作请创建子线程(我猜的)). 如果方法调用成功,它会自动填充msg结构体,这其中包含了窗口和消息代码.</p>
 <p>一些例子里则使用<strong>PeekMessage</strong> 来判断消息队列是否有消息(只返回True/False),参数设置为PM_NOREMOVE的情况下不会从队列删除消息,设置为PM_REMOVE时则效果和GetMessage差不多.</p>
-<p>不过,我们并不会直接解析msg来对窗口实现各种操作. 一般是用两个函数:</p>
+<p>GetMessage的第二个参数是要一个hWnd, 用来指定获取哪个窗口的消息,如果这里填NULL, 那么调用线程的窗口就是需要被Get消息的窗口.</p>
+<p>对于GetMessage/PeekMessage得到的msg, 一般是用两个函数:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TranslateMessage(&amp;msg); </span><br><span class="line">DispatchMessage(&amp;msg);</span><br></pre></td></tr></table></figure>
+<p>来进行消息的解析(分析是哪个窗口,鼠标点击位置…), 从而实现对窗口实现各种操作. </p>
 <p>顾名思义,一个函数翻译消息, 一个函数是分发消息–到正确的窗口.</p>
 <p>把它们放到主函数里:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Run the message loop.</span></span><br><span class="line">	MSG msg = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">while</span> (GetMessage(&amp;msg, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		TranslateMessage(&amp;msg);</span><br><span class="line">		DispatchMessage(&amp;msg);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
@@ -125,7 +127,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" data-id="cjmup7kf60001kwszkxkjmk5y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" data-id="cjnsw7ptu000l9csz9ollmbd6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -199,7 +201,11 @@
       <ul>
         
           <li>
-            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D/">Dx12学习笔记_02_初始化</a>
+            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
           </li>
         
           <li>
@@ -212,10 +218,6 @@
         
           <li>
             <a href="/2018/10/03/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/2018/05/18/2018微软创新杯ImagineCup小记/">2018微软创新杯ImagineCup小记</a>
           </li>
         
       </ul>
