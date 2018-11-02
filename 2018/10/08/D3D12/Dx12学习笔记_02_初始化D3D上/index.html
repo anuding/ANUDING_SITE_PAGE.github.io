@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 初始化的内容按照龙书第四章第三节所述,分为10步, 同时也会穿插一部分第四章前两节的内容">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-30T12:08:45.852Z">
+<meta property="og:updated_time" content="2018-11-01T12:00:14.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_02_初始化上">
 <meta name="twitter:description" content="DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 初始化的内容按照龙书第四章第三节所述,分为10步, 同时也会穿插一部分第四章前两节的内容">
@@ -106,7 +106,9 @@
 <li>buffer缓存</li>
 <li>texture纹理,或者说材质</li>
 </ol>
-<p>本程序中需要用到一个渲染目标(render target view),即交换链中的back buffer, 当buffer被换到后面时,我们趁机把画面渲染到buffer这个render target上. 另外还需要一个深度模板(texture)用来做深度测试, 这个在完成3d图形的消隐的时候会用到. 对于每个资源而言,都必须要有一个view(或者说descriptor,这两个名字可以意义相同)来描述,这样显卡才能知道这些显存里的一个个chunk到底该被怎么读取和使用. 源于这个性质,Dx12可以对resource进行复用,比如有时把一块显存按buffer的格式读取,有时又可以按texture的格式读取.甚至可以描述一块显存的子集从而只使用一部分所需要的资源. 这里我们把descriptor的size提前定好方便后面使用. 而第三种资源CbvSrvUav则是<em>constant buffers, shader resources and unordered access view resources</em> 的缩写, 提供了初始化后真正往窗口画图的基础.</p>
+<p>本程序中需要用到2个渲染目标(render target),即交换链中的buffer, 当buffer被换到后面时(此时称为back buffer),我们趁机把画面渲染到buffer这个render target上. 另外还需要一个深度模板(texture)用来做深度测试, 这个在完成3d图形的消隐的时候会用到. </p>
+<p>对于每个资源而言,都必须要有一个view(或者说descriptor,这两个名字可以意义相同)来描述,这样显卡才能知道这些显存里的一个个chunk到底该被怎么读取和使用. 源于这个性质,Dx12可以对resource进行复用,比如有时把一块显存按buffer的格式读取,有时又可以按texture的格式读取.甚至可以描述一块显存的子集从而只使用一部分所需要的资源. 这里我们把descriptor的size提前定好方便后面使用. 而第三种资源CbvSrvUav则是<em>constant buffers, shader resources and unordered access view resources</em> 的缩写, 提供了初始化后真正往窗口画图的基础.</p>
+<p>这里的各种size, 表示了各种不同descriptor的大小. 后面会提到descriptor需要被存放在heap中, 如果需要使用一个heap中某个descriptor的话, 就需要告知heap的handle该descriptor的size和该descriptor所处的序号.</p>
 <p><strong>下面的内容请先跳到本文第4步, 搞明白CommandQueue和CommandList再来看</strong></p>
 <p>fence这个东西, 是为了解决CPU/GPU冲突而存在的. CPU/GPU冲突可以这么理解: CPU在第0秒时向内存里存了数据D, 第1秒时向CommandQueue里加了一条利用D显示图像的命令, 第3秒时又修改了数据D. 可是GPU的CommandQueue在第1秒接到显示图像命令的时候并不能立即绘制,因为这个List里面还攒了很多其他命令需要先执行, 这样等啊等啊, 直到第4秒时才利用数据D绘制图像,可是这时候数据D已经在第3秒的时候被CPU改变了, 那么这条绘制命令就没有画出我们真正想要的图形. 为了解决这个问题, 我们迫使CPU在GPU处理完Queue的所有Command之前进入等待状态(这个操作后面会被封装为FlushCommandQueue)  </p>
 <p>使用<strong>fence</strong>进行同步实际上维护了两个fence值: 一方面是CPU能直接操作的mCurrentFence(伪fence,代表了fence的预期值), 每次Flush的时候都要递增这个fence的值, 另一方面是CPU通过Queue的Signal间接操作的,处于GPU时间线的mFence(真fence). <strong>至于D3D12里到底有几个fence…不知道,毕竟这玩意是封装好的</strong> 这个<a href="https://www.gamedev.net/forums/topic/684520-d3d12-fence-value/" target="_blank" rel="noopener">链接</a> 讨论了这个问题</p>
@@ -138,7 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" data-id="cjnvozp5300012wszoc700aqw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" data-id="cjnyidc2f000p04szm10b6wq3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
