@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Dx12学习笔记_05_渲染实战 | #ANUDING_SITE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="建议你统计好特 经过了一些偏理论性的描述">
+<meta name="keywords" content="DirectX,Windows">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dx12学习笔记_05_渲染实战">
+<meta property="og:url" content="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/index.html">
+<meta property="og:site_name" content="#ANUDING_SITE">
+<meta property="og:description" content="建议你统计好特 经过了一些偏理论性的描述">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-10T15:54:06.065Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dx12学习笔记_05_渲染实战">
+<meta name="twitter:description" content="建议你统计好特 经过了一些偏理论性的描述">
+  
+    <link rel="alternate" href="/atom.xml" title="#ANUDING_SITE" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">#ANUDING_SITE</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/Gallery">Gallery</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-D3D12/Dx12学习笔记_05_渲染实战" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" class="article-date">
+  <time datetime="2018-12-09T14:05:51.000Z" itemprop="datePublished">2018-12-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dx12学习笔记_05_渲染实战
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>建议你统计好特</p>
+<p>经过了一些偏理论性的描述</p>
+<a id="more"></a>
+<h2 id="Rendering-in-D3D"><a href="#Rendering-in-D3D" class="headerlink" title="Rendering in D3D"></a><font color="black" size="10" face="French Script MT">Rendering in D3D</font></h2><h2 id="0-在渲染之前"><a href="#0-在渲染之前" class="headerlink" title="0. 在渲染之前"></a>0. 在渲染之前</h2><p>笔记_02~笔记 _03所述均为初始化的内容, 这些初始化的内容已经被封装到d3dApp这个类中了. 然而在之前的例子中, 运行起来的样子却还是如同窗口刚刚被建好时的样子, dx的作用还是没有显露出来, 这时候, 我们编辑的重点就应该放在之前建好的TestApp文件中. 目前为止, TestApp作为D3dApp的子类,只做了一些微小的工作, 没什么别的, 大概三件事:</p>
+<ul>
+<li>实现虚函数Initialize()(即TestApp::Initialize()), 该函数先调用父类D3dApp的初始化函数,完成窗口的创建和DX的初始化</li>
+<li>在wWinMain中用当前应用程序的句柄hInstance去实例化TestApp</li>
+<li>在wWinMain中调用TestApp::Initialize()和Run(), 由于Run()不是虚函数, 所以这里也没有覆写而是只能调用D3dApp里的Run(), 其功能就是我们在笔记_00中说的消息循环</li>
+</ul>
+<p>现在我们要做的, 就是在TestApp::Initialize()调用完D3dApp的初始化函数后, 继续创建一些渲染需要的资源以完善管线结构:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> TestApp::Initialize()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (!D3DApp::Initialize())</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">// 我们将在这里创建渲染需要的资源</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有一点, D3dApp中要有两个方法:Update和Draw, 均为纯虚函数. TestApp实现这两个函数后, 在Run中调用这两个函数. 由于Run中维护了一个消息循环, 所以在这里的Update和Draw方法可以持续运行,产生动画的效果</p>
+<p>我们先来创建需要的资源(资源创建的顺序遵照原书中的代码实现顺序, 和书中的讲解顺序略有不同), 之后再来创建纯虚函数并实现:</p>
+<h2 id="1-建立描述符堆-BuildDescriptorHeaps"><a href="#1-建立描述符堆-BuildDescriptorHeaps" class="headerlink" title="1. 建立描述符堆(BuildDescriptorHeaps)"></a>1. 建立描述符堆(BuildDescriptorHeaps)</h2><p>虽然说小标题写的是建立descriptor heap, 事实上这部分内容算在constant buffer里. constant buffer是一种可以被shader读取使用的resource, 当然后面会看到某些其他resource也可以. constant buffer其最重要的特征是基本上每时每刻都需要修改值, 所以一般我们会把它放在upload heap中以实现最大的效率. 一个典型的例子就是物体的变换矩阵, 只要这个我们的画面需要呈现运动, 那么物体的变换矩阵就必须不断更新变化. 修改constant buffer, 在我们的这个案例中其实就是修改变换矩阵, 我们计划将这部分代码放到Update中完成.</p>
+<p>更新constant buffer时, 因为我们使用的heap类型为UPLOAD,所以可以直接从CPU向其拷贝数据. map -&gt;memcpy -&gt; unmap. 书中为了方便, 定义了UploadBufferHelper类, 提供了CopyData方法给人们使用. 通过这个Helper, 我们可以实现Update中的内容:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::Update(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">// Convert Spherical to Cartesian coordinates.</span></span><br><span class="line"><span class="keyword">float</span> x = mRadius*sinf(mPhi)*cosf(mTheta);</span><br><span class="line"><span class="keyword">float</span> z = mRadius*sinf(mPhi)*sinf(mTheta);</span><br><span class="line"><span class="keyword">float</span> y = mRadius*cosf(mPhi);</span><br><span class="line"><span class="comment">// Build the view matrix.</span></span><br><span class="line">XMVECTOR pos = XMVectorSet(x, y, z, <span class="number">1.0f</span>);</span><br><span class="line">XMVECTOR target = XMVectorZero();</span><br><span class="line">XMVECTOR up = XMVectorSet(<span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</span><br><span class="line">XMStoreFloat4x4(&amp;mView, view);</span><br><span class="line">XMMATRIX world = XMLoadFloat4x4(&amp;mWorld);</span><br><span class="line">XMMATRIX proj = XMLoadFloat4x4(&amp;mProj);</span><br><span class="line">XMMATRIX worldViewProj = world*view*proj;</span><br><span class="line"><span class="comment">// Update the constant buffer with the latest</span></span><br><span class="line">worldViewProj matrix.</span><br><span class="line">ObjectConstants objConstants;</span><br><span class="line">XMStoreFloat4x4(&amp;objConstants.WorldViewProj, XMMatrixTranspose(mObjectCB-&gt;CopyData(<span class="number">0</span>, objConstants);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这个Update, 其实就是对Constant Buffer的Update.</p>
+<p>再次回想起以前的知识:我们能把resource绑定在管线上, 是因为我们通过描述符绑定. 目前为止的resource:render target, depth buffer, vertex buffer, index buffer都是如此. 而constant buffer的描述符也是存储在描述符heap中,这个heap好啊, 可以打飞机,打坦克(指可以存储多种resource), 我们赶紧建一个:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;</span><br><span class="line">   cbvHeapDesc.NumDescriptors = <span class="number">1</span>;</span><br><span class="line">   cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;</span><br><span class="line">   cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;</span><br><span class="line">cbvHeapDesc.NodeMask = <span class="number">0</span>;</span><br><span class="line">   ThrowIfFailed(md3dDevice-&gt;CreateDescriptorHeap(&amp;cbvHeapDesc,</span><br><span class="line">       IID_PPV_ARGS(&amp;mCbvHeap)));</span><br></pre></td></tr></table></figure>
+<p>这里可以看到啊, 虽然这个Type说它可以存储各种各样的资源, 但是事实上我们也只有Constant buffer需要存储, 所以也就只需要一个descriptor. 与之前创建其他资源的heap不同, 这个heap的FLAG被我们设置为可见的, 也就是说对于我们的Shader是可见的.</p>
+<p>好了, 现在我们已经能够修改constant buffer, 并且constant buffer 的描述符也有了容身之所heap, 但是我们的中间人constant buffer view还没有着落. 下面我们在另一个函数中完成它</p>
+<h2 id="2-BuildConstantBuffers"><a href="#2-BuildConstantBuffers" class="headerlink" title="2. BuildConstantBuffers"></a>2. BuildConstantBuffers</h2><p>准确地说, 应该叫build constant buffers and constant buffer views</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::BuildConstantBuffers()</span><br><span class="line">&#123;</span><br><span class="line">	mObjectCB = <span class="built_in">std</span>::make_unique&lt;UploadBuffer&lt;ObjectConstants&gt;&gt;(md3dDevice.Get(), <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(<span class="keyword">sizeof</span>(ObjectConstants));</span><br><span class="line"></span><br><span class="line">	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB-&gt;Resource()-&gt;GetGPUVirtualAddress();</span><br><span class="line">    <span class="comment">// Offset to the ith object constant buffer in the buffer.</span></span><br><span class="line">    <span class="keyword">int</span> boxCBufIndex = <span class="number">0</span>;</span><br><span class="line">	cbAddress += boxCBufIndex*objCBByteSize;</span><br><span class="line"></span><br><span class="line">	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;</span><br><span class="line">	cbvDesc.BufferLocation = cbAddress;</span><br><span class="line">	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(<span class="keyword">sizeof</span>(ObjectConstants));</span><br><span class="line"></span><br><span class="line">	md3dDevice-&gt;CreateConstantBufferView(</span><br><span class="line">		&amp;cbvDesc,</span><br><span class="line">		mCbvHeap-&gt;GetCPUDescriptorHandleForHeapStart());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-BuildRootSignature"><a href="#3-BuildRootSignature" class="headerlink" title="3. BuildRootSignature"></a>3. BuildRootSignature</h2><p>Root Signature and Descriptor Tables</p>
+<p><strong>root signature 就是声明哪些resource需要被我们使用(既然要使用就一定得绑定到管线上)以及resource是怎么对应到Shader的输入参数的. </strong></p>
+<p>在draw call执行前, 我们希望不同的resource能够被绑定到管线上以供不同的着色器使用. resource通过寄存器槽(register slot)绑定.</p>
+<p>root signature 定义了哪些resource需要被绑定以及resource如何映射到着色器的输入. 在创建PSO时, 会先检查root signature是否定义了所有需要被绑定的resource. 不同的draw call 需要不同的着色器, 因此也就需要不同的root signature. 想象一下, 如果所有的着色器都是函数(事实也的确如此), 那么着色器需要的resource就是函数参数, 那么root signature就是一个函数的定义签名. 绑定不同的resource, 着色器输出自然不同. ID3D12RootSignature定义了一个数组形式的root 参数. 这个参数我们暂时只考虑描述符表(descriptor table). 这个table定义了一个在descriptor heap里的连续的descriptor. </p>
+<p>root signature 本身并不进行绑定, 他起到的作用只是一个声明. 只有当ID3D12GraphicsCommandList::SetGraphicsRootDescriptorTable时, 才能绑定到管线.</p>
+<p>如我们所述, 我们需要一个root signature, 其参数我们选择descriptor table. 其实也就是一个数组,可以描述heap中一连串的descriptor.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CD3DX12_ROOT_PARAMETER slotRootParameter[<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
+<p>参数描述符表创建完毕, 这种写法下, 暗示了我们只有一个constant buffer需要绑定,且从0号寄存器接受输入.</p>
+<p>反映在着色器里: <a href="https://docs.microsoft.com/en-us/windows/desktop/direct3d12/resource-binding-in-hlsl" target="_blank" rel="noopener">寄存器相关</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cbuffer cbPerObject : <span class="keyword">register</span>(b0)<span class="comment">//如果是Texture就是t0/t1/t2... Buffer就是b开头</span></span><br><span class="line">&#123;</span><br><span class="line">	float4x4 gWorldViewProj; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>接下来该创建root signature了:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A root signature is an array of root parameters.</span></span><br><span class="line"><span class="function">CD3DX12_ROOT_SIGNATURE_DESC <span class="title">rootSigDesc</span><span class="params">(<span class="number">1</span>, slotRootParameter, <span class="number">0</span>, <span class="literal">nullptr</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer</span></span><br><span class="line">ComPtr&lt;ID3DBlob&gt; serializedRootSig = <span class="literal">nullptr</span>;</span><br><span class="line">ComPtr&lt;ID3DBlob&gt; errorBlob = <span class="literal">nullptr</span>;</span><br><span class="line">HRESULT hr = D3D12SerializeRootSignature(&amp;rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,z</span><br><span class="line">	serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());</span><br><span class="line">ThrowIfFailed(md3dDevice-&gt;CreateRootSignature(</span><br><span class="line">	<span class="number">0</span>,</span><br><span class="line">	serializedRootSig-&gt;GetBufferPointer(),</span><br><span class="line">	serializedRootSig-&gt;GetBufferSize(),</span><br><span class="line">	IID_PPV_ARGS(&amp;mRootSignature)));</span><br></pre></td></tr></table></figure>
+<h2 id="4-BuildShadersAndInputLayout"><a href="#4-BuildShadersAndInputLayout" class="headerlink" title="4. BuildShadersAndInputLayout"></a>4. BuildShadersAndInputLayout</h2><p>接下来我们将介绍如何编译我们的Shader, 经过上面的介绍, 我们已经知道了Shader中的constant 数据也就是变换矩阵是如何绑定并输入着色器的. 而Shader还需要读取另一种数据才能产生我们需要的像素, 那便是顶点数据Vertex Buffer, 这个很好理解, 对于Shader而言,顶点数据是最重要的,没有顶点数据根本就没办法产生对应的像素(除非在Shader里写死), 输入的顶点数据和变换矩阵相乘后产生的点才是正确投影到显示器坐标的像素, 只有这样我们才能看到图像. </p>
+<p>顶点数据和变换矩阵这种constant buffer不一样, 它不需要每时每刻都在更新. 计算机中的动画和现实的动态影像不同, 它并不存储每次的物体运动位置, 而是存储物体的初始位置(几乎不变)和它当时的变化量(总是在变), 而我们的顶点数据就是那几乎不变的数据. </p>
+<p>为了方便导入数据, 这里建立一个顶点数据的结构体:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vertex1</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">XMFLOAT3 Pos;</span><br><span class="line">XMFLOAT4 Color;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>定义好顶点结构后, 还需要提供一个描述符, 这样D3D才知道结构体中的每个组件是干什么的:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;D3D12_INPUT_ELEMENT_DESC&gt; mInputLayout;</span><br><span class="line">mInputLayout =</span><br><span class="line">    &#123;</span><br><span class="line">        &#123;<span class="string">"POSITION"</span>, <span class="number">0</span>, DXGI_FORMAT_R32G32B32_FLOAT, <span class="number">0</span>, <span class="number">0</span>, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, <span class="number">0</span> &#125;,</span><br><span class="line">        &#123; <span class="string">"COLOR"</span>, <span class="number">0</span>, DXGI_FORMAT_R32G32B32A32_FLOAT, <span class="number">0</span>, <span class="number">12</span>, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, <span class="number">0</span> &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p>通过填充D3D12_INPUT_ELEMENT_DESC这个结构体, 可以清楚的描述各个组件(指Pos和Color).</p>
+<p>这时候, 我们的顶点通往Shader的路已经打通, 可是仍然存在一个问题: 现在顶点数据都在本机的内存里, GPU并不知道这些顶点数据在哪.  接下来的解决方法, 在BuildBoxGeometry()里</p>
+<p>为了让GPU能够访问顶点数据, 我们必须创建一个D3Dresource, 同时还必须创建一个Resource Descriptor去描述resource. 使用CD3DX12_RESOURCE_DESC的Buffer()方法可以很方便地创建这个resource描述符, 只需要提供Resource的大小即可:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">device-&gt;CreateCommittedResource(</span><br><span class="line">        &amp;CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),</span><br><span class="line">        D3D12_HEAP_FLAG_NONE,</span><br><span class="line">        &amp;CD3DX12_RESOURCE_DESC::Buffer(byteSize),<span class="comment">//这行代码创建了一个resource描述符</span></span><br><span class="line">		D3D12_RESOURCE_STATE_COMMON,</span><br><span class="line">        <span class="literal">nullptr</span>,</span><br><span class="line">        IID_PPV_ARGS(defaultBuffer.GetAddressOf()));</span><br></pre></td></tr></table></figure>
+<p>之后, 我们便需要使用CreateCommittedResource()方法将resource送到heap里, 对于顶点这种不经常变化的resource来说, 将它存入default heap是最好的选择, 因为default heap可以提供最大的GPU带宽. 然而, 这种default heap并不提供CPU访问的接口, 所以我们必须先上传到一个GPU和CPU都能访问的heap, 然后再从这个heap把resource转到default heap里. 在d3dUtil里已经把这个方法封装好了:CreateDefaultBuffer()</p>
+<p>现在vertex buffer 已经存在default heap里了, 还需要一个view来把buffer 绑定到管线上. 同样, 这个方法也被封装到d3dUtil里, 使用时调用VertexBufferView()即可. 绑定完后, Shader所需的所有东西就齐活儿了.</p>
+<p>接下来, 分别调用mCommandList-&gt;IASetVertexBuffers将其绑定, 调用mCommandList-&gt;DrawInstanced将其绘制在屏幕上.</p>
+<p>不过, 我们之前已经介绍过了目录缓存indices buffer, 使用它可以避免存储和绘制很多重复的数据, 这里我们也把indices buffer 放到default heap里, 之后调用IASetIndexBuffer(其中的view用IndexBufferView生成), 绘制函数也不再使用前面的DrawInstanced而是使用DrawIndexedInstanced.</p>
+<p>Shader的输入准备好后, 读取文件中的Shader:</p>
+<p>我们写好的着色器(Shader)一般都是人类可读的文本格式, 比如.HLSL , .CG, .FX等等…这些Shader是不能直接被显卡读取的, 我们需要将其编译. 使用D3DCompileFromFile. 编译一直以来都是需要一些时间消耗的, 我们常常会提前编译Shader而不是在运行时编译, 那样会造成性能下降(而且Windows Store应用必须使用离线编译..).</p>
+<p>但是我们这里为了方便依然采用即时编译… 书中封装的工具类有便捷的方法:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvsByteCode = d3dUtil::CompileShader(<span class="string">L"Shaders\\color.hlsl"</span>, <span class="literal">nullptr</span>, <span class="string">"VS"</span>, <span class="string">"vs_5_0"</span>);</span><br><span class="line">mpsByteCode = d3dUtil::CompileShader(<span class="string">L"Shaders\\color.hlsl"</span>, <span class="literal">nullptr</span>, <span class="string">"PS"</span>, <span class="string">"ps_5_0"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="5-Pipeline-State-Object-PSO"><a href="#5-Pipeline-State-Object-PSO" class="headerlink" title="5.Pipeline State Object(PSO)"></a>5.Pipeline State Object(PSO)</h2><p>这个光栅化阶段不同于之前的顶点着色器阶段可以使用Shader编程. 光栅化阶段只可以进行一定的配置而不可以进行动态编程. 使用D3D12_RASTERIZER_DESC来进行配置</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="cjpi4k5f1000rnouud4bae30z" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Dx12学习笔记_04_渲染管线1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线1</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/">Dx12学习笔记_01_结构设计</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 ANUDING<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/Gallery" class="mobile-nav-link">Gallery</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

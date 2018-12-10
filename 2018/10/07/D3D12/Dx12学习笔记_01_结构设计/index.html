@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-28T13:13:50.401Z">
+<meta property="og:updated_time" content="2018-12-09T14:02:07.848Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_01_结构设计">
 <meta name="twitter:description" content="上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来.">
@@ -91,14 +91,14 @@
       
         <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. </p>
 <a id="more"></a>
-<h2 id="1-What-to-do"><a href="#1-What-to-do" class="headerlink" title="1. What to do?"></a>1. What to do?</h2><p>现在先将整个程序分为两个类,一个是D3DApp类,包括Win32窗口的创建和Dx12管线的初始化等操作, 另一个是        TestApp类,继承自D3DApp, 用以实现渲染:</p>
+<h2 id="1-What-to-do-待完善"><a href="#1-What-to-do-待完善" class="headerlink" title="1. What to do?[待完善]"></a>1. What to do?[待完善]</h2><p>现在先将整个程序分为两个类,一个是D3DApp类,包括Win32窗口的创建和Dx12管线的初始化等操作, 另一个是        TestApp类,继承自D3DApp, 用以实现渲染:</p>
 <p>D3DApp中, public类成员全部都是类的对象对外暴露的接口, 所有操作通过调用这些public方法完成. </p>
 <p>TestApp除了构造函数, 其余函数均为private, 并且复写D3DApp中的虚函数</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjnzjh1lf000q6sszvm9slh8i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="cjpi4k5ey000onouuo2f9eyn4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -159,7 +159,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
     </div>
   </div>
 
@@ -172,7 +172,11 @@
       <ul>
         
           <li>
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线1/">Dx12学习笔记_04_渲染管线1</a>
+            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线1</a>
           </li>
         
           <li>
@@ -185,10 +189,6 @@
         
           <li>
             <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/">Dx12学习笔记_01_结构设计</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/04/D3D12/Dx12学习笔记_00_窗口/">Dx12学习笔记_00_窗口</a>
           </li>
         
       </ul>
