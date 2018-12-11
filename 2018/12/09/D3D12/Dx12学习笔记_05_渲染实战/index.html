@@ -7,18 +7,18 @@
   
   <title>Dx12学习笔记_05_渲染实战 | #ANUDING_SITE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="建议你统计好特 经过了一些偏理论性的描述">
+  <meta name="description" content="经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现">
 <meta name="keywords" content="DirectX,Windows">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dx12学习笔记_05_渲染实战">
 <meta property="og:url" content="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/index.html">
 <meta property="og:site_name" content="#ANUDING_SITE">
-<meta property="og:description" content="建议你统计好特 经过了一些偏理论性的描述">
+<meta property="og:description" content="经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-10T15:54:06.065Z">
+<meta property="og:updated_time" content="2018-12-11T06:56:20.406Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_05_渲染实战">
-<meta name="twitter:description" content="建议你统计好特 经过了一些偏理论性的描述">
+<meta name="twitter:description" content="经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现">
   
     <link rel="alternate" href="/atom.xml" title="#ANUDING_SITE" type="application/atom+xml">
   
@@ -89,8 +89,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>建议你统计好特</p>
-<p>经过了一些偏理论性的描述</p>
+        <p>经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现</p>
 <a id="more"></a>
 <h2 id="Rendering-in-D3D"><a href="#Rendering-in-D3D" class="headerlink" title="Rendering in D3D"></a><font color="black" size="10" face="French Script MT">Rendering in D3D</font></h2><h2 id="0-在渲染之前"><a href="#0-在渲染之前" class="headerlink" title="0. 在渲染之前"></a>0. 在渲染之前</h2><p>笔记_02~笔记 _03所述均为初始化的内容, 这些初始化的内容已经被封装到d3dApp这个类中了. 然而在之前的例子中, 运行起来的样子却还是如同窗口刚刚被建好时的样子, dx的作用还是没有显露出来, 这时候, 我们编辑的重点就应该放在之前建好的TestApp文件中. 目前为止, TestApp作为D3dApp的子类,只做了一些微小的工作, 没什么别的, 大概三件事:</p>
 <ul>
@@ -142,12 +141,15 @@
 <p>我们写好的着色器(Shader)一般都是人类可读的文本格式, 比如.HLSL , .CG, .FX等等…这些Shader是不能直接被显卡读取的, 我们需要将其编译. 使用D3DCompileFromFile. 编译一直以来都是需要一些时间消耗的, 我们常常会提前编译Shader而不是在运行时编译, 那样会造成性能下降(而且Windows Store应用必须使用离线编译..).</p>
 <p>但是我们这里为了方便依然采用即时编译… 书中封装的工具类有便捷的方法:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvsByteCode = d3dUtil::CompileShader(<span class="string">L"Shaders\\color.hlsl"</span>, <span class="literal">nullptr</span>, <span class="string">"VS"</span>, <span class="string">"vs_5_0"</span>);</span><br><span class="line">mpsByteCode = d3dUtil::CompileShader(<span class="string">L"Shaders\\color.hlsl"</span>, <span class="literal">nullptr</span>, <span class="string">"PS"</span>, <span class="string">"ps_5_0"</span>);</span><br></pre></td></tr></table></figure>
-<h2 id="5-Pipeline-State-Object-PSO"><a href="#5-Pipeline-State-Object-PSO" class="headerlink" title="5.Pipeline State Object(PSO)"></a>5.Pipeline State Object(PSO)</h2><p>这个光栅化阶段不同于之前的顶点着色器阶段可以使用Shader编程. 光栅化阶段只可以进行一定的配置而不可以进行动态编程. 使用D3D12_RASTERIZER_DESC来进行配置</p>
+<h2 id="5-Pipeline-State-Object-PSO"><a href="#5-Pipeline-State-Object-PSO" class="headerlink" title="5.Pipeline State Object(PSO)"></a>5.Pipeline State Object(PSO)</h2><p>管线状态对象, 所做的事情就是把一些控制管线状态的对象绑定在管线上, 这些对象合计称为Pipeline State Object.  事实上仍然没有对具体的资源进行操作, 但它完成了统合各个状态的任务(input layout, shader, 光栅化状态…), 并且可以在这个阶段对各个状态的兼容性进行检查. 注意这里只是绑定了Shader和Shader参数格式, 具体的Shader参数是在Draw里绑定的. 这个具体的Shader参数我们使用Util类中的MeshGeometry包装了.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::BuildPSO()</span><br><span class="line">&#123;</span><br><span class="line">    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;</span><br><span class="line">    ZeroMemory(&amp;psoDesc, <span class="keyword">sizeof</span>(D3D12_GRAPHICS_PIPELINE_STATE_DESC));</span><br><span class="line">    psoDesc.InputLayout = &#123; mInputLayout.data(), (UINT)mInputLayout.size() &#125;;</span><br><span class="line">    psoDesc.pRootSignature = mRootSignature.Get();</span><br><span class="line">    psoDesc.VS = </span><br><span class="line">	&#123; </span><br><span class="line">		<span class="keyword">reinterpret_cast</span>&lt;BYTE*&gt;(mvsByteCode-&gt;GetBufferPointer()), </span><br><span class="line">		mvsByteCode-&gt;GetBufferSize() </span><br><span class="line">	&#125;;</span><br><span class="line">    psoDesc.PS = </span><br><span class="line">	&#123; </span><br><span class="line">		<span class="keyword">reinterpret_cast</span>&lt;BYTE*&gt;(mpsByteCode-&gt;GetBufferPointer()), </span><br><span class="line">		mpsByteCode-&gt;GetBufferSize() </span><br><span class="line">	&#125;;</span><br><span class="line">    psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);</span><br><span class="line">    psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);</span><br><span class="line">    psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);</span><br><span class="line">    psoDesc.SampleMask = UINT_MAX;</span><br><span class="line">    psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;</span><br><span class="line">    psoDesc.NumRenderTargets = <span class="number">1</span>;</span><br><span class="line">    psoDesc.RTVFormats[<span class="number">0</span>] = mBackBufferFormat;</span><br><span class="line">    psoDesc.SampleDesc.Count = m4xMsaaState ? <span class="number">4</span> : <span class="number">1</span>;</span><br><span class="line">    psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - <span class="number">1</span>) : <span class="number">0</span>;</span><br><span class="line">    psoDesc.DSVFormat = mDepthStencilFormat;</span><br><span class="line">    ThrowIfFailed(md3dDevice-&gt;CreateGraphicsPipelineState(&amp;psoDesc, IID_PPV_ARGS(&amp;mPSO)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后我们得到的就是填充好的mPSO对象, 接下来渲染时就需要在Draw里使用它来初始化.</p>
+<p>到此为止, 渲染部分的初始化就讲完了, 下一篇将会继续渲染内容, 把Draw和Update函数完善.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="cjpi4k5f1000rnouud4bae30z" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="cjpjew1dw001bm8uu5cgceq72" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -157,6 +159,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Dx12学习笔记_06_渲染Update和Draw
+        
+      </div>
+    </a>
   
   
     <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/" id="article-nav-older" class="article-nav-link-wrap">
@@ -212,6 +223,10 @@
       <ul>
         
           <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
           </li>
         
@@ -225,10 +240,6 @@
         
           <li>
             <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/">Dx12学习笔记_01_结构设计</a>
           </li>
         
       </ul>
