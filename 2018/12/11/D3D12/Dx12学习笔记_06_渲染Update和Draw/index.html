@@ -15,12 +15,10 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-11T07:15:09.307Z">
+<meta property="og:updated_time" content="2018-12-11T08:38:24.344Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_06_渲染Update和Draw">
 <meta name="twitter:description" content="现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了">
-  
-    <link rel="alternate" href="/atom.xml" title="#ANUDING_SITE" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -53,10 +51,10 @@
         
           <a class="main-nav-link" href="/Gallery">Gallery</a>
         
+          <a class="main-nav-link" href="/About">About</a>
+        
       </nav>
       <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
@@ -91,11 +89,14 @@
       
         <p>现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了</p>
 <a id="more"></a>
-<h2 id="TestApp-Update-const-GameTimer-amp-gt"><a href="#TestApp-Update-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Update(const GameTimer&amp; gt)"></a>TestApp::Update(const GameTimer&amp; gt)</h2><h2 id="TestApp-Draw-const-GameTimer-amp-gt"><a href="#TestApp-Draw-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Draw(const GameTimer&amp; gt)"></a>TestApp::Draw(const GameTimer&amp; gt)</h2>
+<h2 id="TestApp-Update-const-GameTimer-amp-gt"><a href="#TestApp-Update-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Update(const GameTimer&amp; gt)"></a>TestApp::Update(const GameTimer&amp; gt)</h2><p>这个函数里需要做的,就是不断生成新的world view projection 矩阵, 其构建矩阵的参数在鼠标运动的函数里更新, 而鼠标运动的函数又在D3DApp的MsgProc里进行Windows消息响应时被调用. </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::Update(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Convert Spherical to Cartesian coordinates.</span></span><br><span class="line">    <span class="keyword">float</span> x = mRadius*sinf(mPhi)*cosf(mTheta);</span><br><span class="line">    <span class="keyword">float</span> z = mRadius*sinf(mPhi)*sinf(mTheta);</span><br><span class="line">    <span class="keyword">float</span> y = mRadius*cosf(mPhi);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Build the view matrix.</span></span><br><span class="line">    XMVECTOR pos = XMVectorSet(x, y, z, <span class="number">1.0f</span>);</span><br><span class="line">    XMVECTOR target = XMVectorZero();</span><br><span class="line">    XMVECTOR up = XMVectorSet(<span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line"></span><br><span class="line">    XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</span><br><span class="line">    XMStoreFloat4x4(&amp;mView, view);</span><br><span class="line"></span><br><span class="line">    XMMATRIX world = XMLoadFloat4x4(&amp;mWorld);</span><br><span class="line">    XMMATRIX proj = XMLoadFloat4x4(&amp;mProj);</span><br><span class="line">    XMMATRIX worldViewProj = world*view*proj;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Update the constant buffer with the latest worldViewProj matrix.</span></span><br><span class="line">	ObjectConstants objConstants;</span><br><span class="line">    XMStoreFloat4x4(&amp;objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));</span><br><span class="line">    mObjectCB-&gt;CopyData(<span class="number">0</span>, objConstants);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构建好三个矩阵后, 直接相乘构成变换矩阵, 之后利用mObjectCB更新constant buffer.</p>
+<h2 id="TestApp-Draw-const-GameTimer-amp-gt"><a href="#TestApp-Draw-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Draw(const GameTimer&amp; gt)"></a>TestApp::Draw(const GameTimer&amp; gt)</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" data-id="cjpjew1cc000nm8uu22q1e7c0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" data-id="cjpjqwsu3000n68uu6jbpv3rq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -105,6 +106,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Dx12学习笔记_07_优化
+        
+      </div>
+    </a>
   
   
     <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" id="article-nav-older" class="article-nav-link-wrap">
@@ -160,6 +170,10 @@
       <ul>
         
           <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
           </li>
         
@@ -168,15 +182,11 @@
           </li>
         
           <li>
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线1</a>
+            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
           </li>
         
           <li>
             <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
           </li>
         
       </ul>
@@ -204,6 +214,8 @@
     <a href="/archives" class="mobile-nav-link">Archives</a>
   
     <a href="/Gallery" class="mobile-nav-link">Gallery</a>
+  
+    <a href="/About" class="mobile-nav-link">About</a>
   
 </nav>
     
