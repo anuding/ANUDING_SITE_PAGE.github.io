@@ -16,9 +16,7 @@
 <meta property="og:description" content="现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.  https://i.postimg.cc/jjdMYnRz/screenshot-20">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg">
-<meta property="og:image" content="file:///C:/Users/ANUDING/AppData/Roaming/Tencent/Users/1093172147/TIM/WinTemp/RichOle/J@KHLRN9%7DRZ%D@Q6H5T2991.png">
-<meta property="og:image" content="file:///C:/Users/ANUDING/AppData/Roaming/Tencent/Users/1093172147/TIM/WinTemp/RichOle/1E@(HZPP]@U~OOFZ">
-<meta property="og:updated_time" content="2018-12-16T13:00:03.323Z">
+<meta property="og:updated_time" content="2019-01-24T12:10:55.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_07_优化">
 <meta name="twitter:description" content="现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.  https://i.postimg.cc/jjdMYnRz/screenshot-20">
@@ -95,13 +93,25 @@
 <p><img src="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" width="50%"></p>
 <p><a href="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" target="_blank" rel="noopener">https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg</a></p>
 <a id="more"></a>
-<h2 id="1-Frame-Resource"><a href="#1-Frame-Resource" class="headerlink" title="1. Frame Resource"></a>1. Frame Resource</h2><h2 id="2-Render-Items"><a href="#2-Render-Items" class="headerlink" title="2. Render Items"></a>2. Render Items</h2><h2 id="3-Pass-Constants"><a href="#3-Pass-Constants" class="headerlink" title="3. Pass Constants"></a>3. Pass Constants</h2><p>一个比较统一的办法, 我在VS2017上用的是NuGet安装的这两个包<img src="file:///C:\Users\ANUDING\AppData\Roaming\Tencent\Users\1093172147\TIM\WinTemp\RichOle\J@KHLRN9}RZ%D@Q6H5T2991.png" alt="img">, </p>
-<p>除此之外没有使用自己编译的任何库和依赖, 这样头文件里除了d3d11本体(win10自带的, 不过用自安装的应该差距不大),d3dx和lib都不用了<img src="file:///C:\Users\ANUDING\AppData\Roaming\Tencent\Users\1093172147\TIM\WinTemp\RichOle\1E@(HZPP]@U~OOFZ" alt="img">%LBKLR.png)</p>
+<h2 id="1-Frame-Resource"><a href="#1-Frame-Resource" class="headerlink" title="1. Frame Resource"></a>1. Frame Resource</h2><p>之前我们将CPU和GPU每帧都同步一次(CPU传入一个Signal, 并不断观测Fence的值有没有被Signal改变), 这个行为帮助我们保护command allocator在GPU处理完command之前不会被重置, 这样确保了command的<strong>完整的执行</strong>. 与command相关的constant buffer也不会在GPU处理完command list之前被修改, 这样确保了command的<strong>正确的执行</strong>. </p>
+<p>然而每一帧都flush一遍command queue也确实有些过分: 在GPU得到机会处理新的帧时, command queue也许还在GPU端接受commands导致GPU暂时无事可做&lt;-直到CPU提交command. 当提交完毕后, CPU也不得不等待GPU慢慢消化那些command. </p>
+<p>书上的解决办法是多设置几个资源, 以循环的方式更新并处理. CPU提交完command之后, 无需等待GPU处理完, 直接在下一个资源上生成并提交command.当然, 我们必须时刻检查下一个资源是不是在被GPU或CPU占用, 如果不检查占用就直接使用还是会出现刚才提到的两个问题. 只要CPU的速度足够快, 它就能使GPU总是有待处理的资源, 而我们的CPU如果快的过分, 最终会在GPU正在处理的前一个资源处无事可做. 不过这是好事, 这样GPU就总是忙碌, 闲下来的CPU总有其他杂七杂八的活分给它.</p>
+<p>这里我们设置了3个Frame Resource, 所以我们可以在这个方法里看到:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TestApp::BuildFrameResources()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; gNumFrameResources; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		mFrameResources.push_back(<span class="built_in">std</span>::make_unique&lt;FrameResource&gt;(md3dDevice.Get(),</span><br><span class="line">			<span class="number">1</span>, (UINT)mAllRitems.size()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>gNumFrameResources</strong> 是Frame Resource的个数, 我们设置为3. 然后创建3个frame resource. 调用frame resource构造函数的时候, 需要传入pass resource的数量和object resource的数量. pass resource是所有物体共享的资源, 包括View矩阵和Projection矩阵. object resource则只包含各个物体的World矩阵, 所以pass resource的数量应该为1, object resource应该为物体的数量. 这两个资源后面会详细介绍.</p>
+<h2 id="2-Render-Items"><a href="#2-Render-Items" class="headerlink" title="2. Render Items"></a>2. Render Items</h2><p>Render Items算是一个GameObject, 也是一个渲染的基本单位, 因为一个render item需要一个draw call. 遍历Render Item的vector,就可以渲染全部的物体.</p>
+<p>Render Item包含了该物体的拓扑逻辑和几何结构. 绘制的时候遍历Render Item的vector, 依次设置顶点缓存和索引缓存, 然后调用drawIndexed(). 为了渲染不同的物体, 还必须存储不同类型的render item的列表:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// List of all the render items.</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;RenderItem&gt;&gt; mAllRitems;</span><br><span class="line"><span class="comment">// Render items divided by PSO.</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;RenderItem*&gt; mOpaqueRitems;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;RenderItem*&gt; mTransparentRitems;</span><br></pre></td></tr></table></figure>
+<h2 id="3-Pass-Constants"><a href="#3-Pass-Constants" class="headerlink" title="3. Pass Constants"></a>3. Pass Constants</h2><p>pass resource是所有物体共享的资源, 包括View矩阵和Projection矩阵. 它在一个rendering pass里是不会变化的, 即调用一次Draw()函数期间不会变化. </p>
+<p>现在, 因为我们有了两种更新频率不同的constant buffer view, pass每帧都变, object只在物体移动时改变:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TestApp::UpdateObjectCBs(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">auto</span> currObjectCB = mCurrFrameResource-&gt;ObjectCB.get();</span><br><span class="line">	<span class="keyword">if</span> (e-&gt;NumFramesDirty &gt; <span class="number">0</span>)<span class="comment">//做个检查</span></span><br><span class="line">	&#123;</span><br><span class="line">	    ...</span><br><span class="line">	    currObjectCB-&gt;CopyData(e-&gt;ObjCBIndex, objConstants);</span><br><span class="line">	    e-&gt;NumFramesDirty--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TestApp::UpdateMainPassCB(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">auto</span> currPassCB = mCurrFrameResource-&gt;PassCB.get();<span class="comment">//不做检查, 每帧更新</span></span><br><span class="line">	currPassCB-&gt;CopyData(<span class="number">0</span>, mMainPassCB);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以还需要两种不同的root signature, 前面讲过, root signature是用来是声明哪些resource需要被我们使用(既然要使用就一定得绑定到管线上)以及resource是怎么对应到Shader的输入参数的. </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_07_优化/" data-id="cjpjqwsu5000p68uurid4m750" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_07_优化/" data-id="cjrakucni000q4wuuq376g4gk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -197,7 +207,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 ANUDING<br>
+      &copy; 2019 ANUDING<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
