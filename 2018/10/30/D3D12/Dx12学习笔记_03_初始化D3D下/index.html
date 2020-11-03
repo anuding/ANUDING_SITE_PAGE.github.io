@@ -15,10 +15,12 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="书接上回, 现在Initial3D已经只剩下一个函数需要完成了,其余的初始化因为和窗口尺寸关系比较大,所以单独放在OnResize()里, 便于响应窗口消息">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-09T14:01:44.235Z">
+<meta property="og:image" content="http://www.braynzarsoft.net/image/100209">
+<meta property="og:updated_time" content="2019-03-04T02:09:14.891Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_03_初始化下">
 <meta name="twitter:description" content="书接上回, 现在Initial3D已经只剩下一个函数需要完成了,其余的初始化因为和窗口尺寸关系比较大,所以单独放在OnResize()里, 便于响应窗口消息">
+<meta name="twitter:image" content="http://www.braynzarsoft.net/image/100209">
   
   
     <link rel="icon" href="/favicon.png">
@@ -88,7 +90,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>书接上回, 现在Initial3D已经只剩下一个函数需要完成了,其余的初始化因为和窗口尺寸关系比较大,所以单独放在OnResize()里, 便于响应窗口消息<a id="more"></a></p>
-<h2 id="6-接上篇序号-Rtv-amp-Dsv-DescriptorHeaps"><a href="#6-接上篇序号-Rtv-amp-Dsv-DescriptorHeaps" class="headerlink" title="6(接上篇序号).  Rtv &amp; Dsv DescriptorHeaps "></a>6(接上篇序号).  Rtv &amp; Dsv DescriptorHeaps <div id="SEC.6"></div></h2><p>上一篇已经提过了, 我们这里需要2个rtv去描述swapchain中的buffer,1个dsv去描述深度测试用的深度信息.为了存储这些描述符(view/descriptor), 我们需要两种heap来分别存放两种view:</p>
+<h2 id="6-接上篇序号-Rtv-amp-Dsv-DescriptorHeaps"><a href="#6-接上篇序号-Rtv-amp-Dsv-DescriptorHeaps" class="headerlink" title="6(接上篇序号).  Rtv &amp; Dsv DescriptorHeaps "></a>6(接上篇序号).  Rtv &amp; Dsv DescriptorHeaps <div id="SEC.6"></div></h2><p><img src="http://www.braynzarsoft.net/image/100209" alt="Descriptor tables"></p>
+<p>上一篇已经提过了, 我们这里需要2个rtv去描述swapchain中的buffer,1个dsv去描述深度测试用的深度信息.为了存储这些描述符(view/descriptor), 我们需要两种heap来分别存放两种view:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;</span><br><span class="line">   rtvHeapDesc.NumDescriptors = SwapChainBufferCount;<span class="comment">//2</span></span><br><span class="line">   rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;</span><br><span class="line">   rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;</span><br><span class="line">rtvHeapDesc.NodeMask = <span class="number">0</span>;</span><br><span class="line">   md3dDevice-&gt;CreateDescriptorHeap(</span><br><span class="line">       &amp;rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf()));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;</span><br><span class="line">   dsvHeapDesc.NumDescriptors = <span class="number">1</span>;</span><br><span class="line">   dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;</span><br><span class="line">   dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;</span><br><span class="line">dsvHeapDesc.NodeMask = <span class="number">0</span>;</span><br><span class="line">   md3dDevice-&gt;CreateDescriptorHeap(</span><br><span class="line">       &amp;dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf()));</span><br></pre></td></tr></table></figure>
 <h2 id="7-Render-Target-View"><a href="#7-Render-Target-View" class="headerlink" title="7. Render Target View"></a>7. Render Target View</h2><p>​    从这一步开始, 初始化的内容都会放在OnResize()这个函数里. 每当WM_SIZE消息被接受时, 这个函数被调用, 我们需要重新创建back buffer 和深度buffer.</p>
 <p> swap chain里存储着一部分对back buffer的描述, 真正的back buffer是resource, 所以创建一个ID3D12Resource的ComPtr:</p>
@@ -135,7 +138,7 @@ mScreenViewport.MaxDepth = 1.0f;
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" data-id="cjrakucoz001b4wuugu5fgigb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" data-id="ckh22qn6s000tcgtytrf58mf8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -177,7 +180,7 @@ mScreenViewport.MaxDepth = 1.0f;
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
     </div>
   </div>
 
@@ -187,7 +190,7 @@ mScreenViewport.MaxDepth = 1.0f;
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
     </div>
   </div>
 
@@ -196,7 +199,7 @@ mScreenViewport.MaxDepth = 1.0f;
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
     </div>
   </div>
 
@@ -209,11 +212,15 @@ mScreenViewport.MaxDepth = 1.0f;
       <ul>
         
           <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
+            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
           </li>
         
           <li>
             <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
           </li>
         
           <li>
@@ -222,10 +229,6 @@ mScreenViewport.MaxDepth = 1.0f;
         
           <li>
             <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
           </li>
         
       </ul>
@@ -240,7 +243,7 @@ mScreenViewport.MaxDepth = 1.0f;
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 ANUDING<br>
+      &copy; 2020 ANUDING<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

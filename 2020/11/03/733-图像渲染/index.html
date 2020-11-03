@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>733.图像渲染 | #ANUDING_SITE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，让你重新上色这幅图像。为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标">
+<meta name="keywords" content="DFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="733.图像渲染">
+<meta property="og:url" content="http://yoursite.com/2020/11/03/733-图像渲染/index.html">
+<meta property="og:site_name" content="#ANUDING_SITE">
+<meta property="og:description" content="有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，让你重新上色这幅图像。为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-11-03T14:39:43.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="733.图像渲染">
+<meta name="twitter:description" content="有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，让你重新上色这幅图像。为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">#ANUDING_SITE</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/Gallery">Gallery</a>
+        
+          <a class="main-nav-link" href="/About">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-733-图像渲染" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/03/733-图像渲染/" class="article-date">
+  <time datetime="2020-11-03T14:30:05.000Z" itemprop="datePublished">2020-11-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      733.图像渲染
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。<br>给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，让你重新上色这幅图像。<br>为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标相同的相连像素点，……，重复该过程。将所有有记录的像素点的颜色值改为新的颜色值。<br>最后返回经过上色渲染后的图像。</p>
+<p>示例 1:</p>
+<p>输入:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">image = [[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>],[<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>]]</span><br><span class="line">sr = <span class="number">1</span>, sc = <span class="number">1</span>, newColor = <span class="number">2</span></span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">输出:</span><br><span class="line">``` python </span><br><span class="line">[[<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>],[<span class="number">2</span>,<span class="number">2</span>,<span class="number">0</span>],[<span class="number">2</span>,<span class="number">0</span>,<span class="number">1</span>]]</span><br></pre></td></tr></table></figure></p>
+<p>解析: </p>
+<p>在图像的正中间，(坐标(sr,sc)=(1,1)), 在路径上所有符合条件的像素点的颜色都被更改成2。注意，右下角的像素没有更改为2，因为它不是在上下左右四个方向上与初始点相连的像素点。</p>
+<p>注意:</p>
+<ul>
+<li>image 和 image[0] 的长度在范围 [1, 50] 内。</li>
+<li>给出的初始点将满足 0 &lt;= sr &lt; image.length 和 0 &lt;= sc &lt; image[0].length。</li>
+<li>image[i][j] 和 newColor 表示的颜色值在范围 [0, 65535]内。</li>
+</ul>
+<p>来自 <a href="https://leetcode-cn.com/problems/flood-fill/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/flood-fill/</a> </p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>深度优先做法，以坐标点为起点找到周围所有相同颜色的点。涂黑自己，然后进入第一个符合标准的点内继续寻找。深度优先表现出来就是头四个候选点其实只通过第一个就能涂黑大部分了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">floodFill</span><span class="params">(self, image: List[List[int]], sr: int, sc: int, newColor: int)</span> -&gt; List[List[int]]:</span></span><br><span class="line">        MIN_ROW = <span class="number">0</span></span><br><span class="line">        MIN_COL = <span class="number">0</span></span><br><span class="line">        MAX_ROW = len(image)</span><br><span class="line">        MAX_COL = len(image[<span class="number">0</span>])</span><br><span class="line">        oldColor = image[sr][sc]</span><br><span class="line">        <span class="keyword">if</span>(oldColor==newColor):</span><br><span class="line">            <span class="keyword">return</span> image</span><br><span class="line">        <span class="comment"># up</span></span><br><span class="line">        up_r = sr - <span class="number">1</span></span><br><span class="line">        up_c = sc - <span class="number">0</span></span><br><span class="line">        <span class="comment"># down</span></span><br><span class="line">        down_r = sr + <span class="number">1</span></span><br><span class="line">        down_c = sc - <span class="number">0</span></span><br><span class="line">        <span class="comment"># left</span></span><br><span class="line">        left_r = sr - <span class="number">0</span></span><br><span class="line">        left_c = sc - <span class="number">1</span></span><br><span class="line">        <span class="comment"># right</span></span><br><span class="line">        right_r = sr - <span class="number">0</span></span><br><span class="line">        right_c = sc + <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        image[sr][sc] = newColor</span><br><span class="line">        <span class="keyword">if</span>(up_r&lt;MAX_ROW <span class="keyword">and</span> up_r&gt;=MIN_ROW <span class="keyword">and</span> up_c &lt; MAX_COL <span class="keyword">and</span> up_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[up_r][up_c]==oldColor):</span><br><span class="line">                self.floodFill(image, up_r, up_c, newColor)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span>(down_r&lt;MAX_ROW <span class="keyword">and</span> down_r&gt;=MIN_ROW <span class="keyword">and</span> down_c &lt; MAX_COL <span class="keyword">and</span> down_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[down_r][down_c]==oldColor):</span><br><span class="line">                self.floodFill(image, down_r, down_c, newColor)</span><br><span class="line">        <span class="keyword">if</span>(left_r&lt;MAX_ROW <span class="keyword">and</span> left_r&gt;=MIN_ROW <span class="keyword">and</span> left_c &lt; MAX_COL <span class="keyword">and</span> left_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[left_r][left_c]==oldColor):</span><br><span class="line">                self.floodFill(image, left_r, left_c, newColor)</span><br><span class="line">        <span class="keyword">if</span>(right_r&lt;MAX_ROW <span class="keyword">and</span> right_r&gt;=MIN_ROW <span class="keyword">and</span> right_c &lt; MAX_COL <span class="keyword">and</span> right_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[right_r][right_c]==oldColor):</span><br><span class="line">                self.floodFill(image, right_r, right_c, newColor)</span><br><span class="line">        <span class="keyword">return</span> image</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/11/03/733-图像渲染/" data-id="ckh22qn5v0005cgtykwbctt9d" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Dx12学习笔记_06_渲染Update和Draw</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 ANUDING<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/Gallery" class="mobile-nav-link">Gallery</a>
+  
+    <a href="/About" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

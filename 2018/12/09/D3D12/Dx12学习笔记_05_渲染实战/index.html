@@ -15,10 +15,14 @@
 <meta property="og:site_name" content="#ANUDING_SITE">
 <meta property="og:description" content="经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-11T06:56:20.406Z">
+<meta property="og:image" content="https://www.braynzarsoft.net/image/100204">
+<meta property="og:image" content="http://www.braynzarsoft.net/image/100209">
+<meta property="og:image" content="https://www.braynzarsoft.net/image/100210">
+<meta property="og:updated_time" content="2019-03-04T02:11:30.404Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dx12学习笔记_05_渲染实战">
 <meta name="twitter:description" content="经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现">
+<meta name="twitter:image" content="https://www.braynzarsoft.net/image/100204">
   
   
     <link rel="icon" href="/favicon.png">
@@ -88,6 +92,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现</p>
+<p><img src="https://www.braynzarsoft.net/image/100204" alt="img"></p>
 <a id="more"></a>
 <h2 id="Rendering-in-D3D"><a href="#Rendering-in-D3D" class="headerlink" title="Rendering in D3D"></a><font color="black" size="10" face="French Script MT">Rendering in D3D</font></h2><h2 id="0-在渲染之前"><a href="#0-在渲染之前" class="headerlink" title="0. 在渲染之前"></a>0. 在渲染之前</h2><p>笔记_02~笔记 _03所述均为初始化的内容, 这些初始化的内容已经被封装到d3dApp这个类中了. 然而在之前的例子中, 运行起来的样子却还是如同窗口刚刚被建好时的样子, dx的作用还是没有显露出来, 这时候, 我们编辑的重点就应该放在之前建好的TestApp文件中. 目前为止, TestApp作为D3dApp的子类,只做了一些微小的工作, 没什么别的, 大概三件事:</p>
 <ul>
@@ -99,7 +104,8 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> TestApp::Initialize()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (!D3DApp::Initialize())</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">// 我们将在这里创建渲染需要的资源</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>还有一点, D3dApp中要有两个方法:Update和Draw, 均为纯虚函数. TestApp实现这两个函数后, 在Run中调用这两个函数. 由于Run中维护了一个消息循环, 所以在这里的Update和Draw方法可以持续运行,产生动画的效果</p>
 <p>我们先来创建需要的资源(资源创建的顺序遵照原书中的代码实现顺序, 和书中的讲解顺序略有不同), 之后再来创建纯虚函数并实现:</p>
-<h2 id="1-建立描述符堆-BuildDescriptorHeaps"><a href="#1-建立描述符堆-BuildDescriptorHeaps" class="headerlink" title="1. 建立描述符堆(BuildDescriptorHeaps)"></a>1. 建立描述符堆(BuildDescriptorHeaps)</h2><p>虽然说小标题写的是建立descriptor heap, 事实上这部分内容算在constant buffer里. constant buffer是一种可以被shader读取使用的resource, 当然后面会看到某些其他resource也可以. constant buffer其最重要的特征是基本上每时每刻都需要修改值, 所以一般我们会把它放在upload heap中以实现最大的效率. 一个典型的例子就是物体的变换矩阵, 只要这个我们的画面需要呈现运动, 那么物体的变换矩阵就必须不断更新变化. 修改constant buffer, 在我们的这个案例中其实就是修改变换矩阵, 我们计划将这部分代码放到Update中完成.</p>
+<h2 id="1-建立描述符堆-BuildDescriptorHeaps"><a href="#1-建立描述符堆-BuildDescriptorHeaps" class="headerlink" title="1. 建立描述符堆(BuildDescriptorHeaps)"></a>1. 建立描述符堆(BuildDescriptorHeaps)</h2><p><img src="http://www.braynzarsoft.net/image/100209" alt="Descriptor tables"></p>
+<p>虽然说小标题写的是建立descriptor heap, 事实上这部分内容算在constant buffer里. constant buffer是一种可以被shader读取使用的resource, 当然后面会看到某些其他resource也可以. constant buffer其最重要的特征是基本上每时每刻都需要修改值, 所以一般我们会把它放在upload heap中以实现最大的效率. 一个典型的例子就是物体的变换矩阵, 只要这个我们的画面需要呈现运动, 那么物体的变换矩阵就必须不断更新变化. 修改constant buffer, 在我们的这个案例中其实就是修改变换矩阵, 我们计划将这部分代码放到Update中完成.</p>
 <p>更新constant buffer时, 因为我们使用的heap类型为UPLOAD,所以可以直接从CPU向其拷贝数据. map -&gt;memcpy -&gt; unmap. 书中为了方便, 定义了UploadBufferHelper类, 提供了CopyData方法给人们使用. 通过这个Helper, 我们可以实现Update中的内容:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::Update(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">// Convert Spherical to Cartesian coordinates.</span></span><br><span class="line"><span class="keyword">float</span> x = mRadius*sinf(mPhi)*cosf(mTheta);</span><br><span class="line"><span class="keyword">float</span> z = mRadius*sinf(mPhi)*sinf(mTheta);</span><br><span class="line"><span class="keyword">float</span> y = mRadius*cosf(mPhi);</span><br><span class="line"><span class="comment">// Build the view matrix.</span></span><br><span class="line">XMVECTOR pos = XMVectorSet(x, y, z, <span class="number">1.0f</span>);</span><br><span class="line">XMVECTOR target = XMVectorZero();</span><br><span class="line">XMVECTOR up = XMVectorSet(<span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</span><br><span class="line">XMStoreFloat4x4(&amp;mView, view);</span><br><span class="line">XMMATRIX world = XMLoadFloat4x4(&amp;mWorld);</span><br><span class="line">XMMATRIX proj = XMLoadFloat4x4(&amp;mProj);</span><br><span class="line">XMMATRIX worldViewProj = world*view*proj;</span><br><span class="line"><span class="comment">// Update the constant buffer with the latest</span></span><br><span class="line">worldViewProj matrix.</span><br><span class="line">ObjectConstants objConstants;</span><br><span class="line">XMStoreFloat4x4(&amp;objConstants.WorldViewProj, XMMatrixTranspose(mObjectCB-&gt;CopyData(<span class="number">0</span>, objConstants);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p> 这个Update, 其实就是对Constant Buffer的Update.</p>
@@ -111,6 +117,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::BuildConstantBuffers()</span><br><span class="line">&#123;</span><br><span class="line">	mObjectCB = <span class="built_in">std</span>::make_unique&lt;UploadBuffer&lt;ObjectConstants&gt;&gt;(md3dDevice.Get(), <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(<span class="keyword">sizeof</span>(ObjectConstants));</span><br><span class="line"></span><br><span class="line">	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB-&gt;Resource()-&gt;GetGPUVirtualAddress();</span><br><span class="line">    <span class="comment">// Offset to the ith object constant buffer in the buffer.</span></span><br><span class="line">    <span class="keyword">int</span> boxCBufIndex = <span class="number">0</span>;</span><br><span class="line">	cbAddress += boxCBufIndex*objCBByteSize;</span><br><span class="line"></span><br><span class="line">	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;</span><br><span class="line">	cbvDesc.BufferLocation = cbAddress;</span><br><span class="line">	cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(<span class="keyword">sizeof</span>(ObjectConstants));</span><br><span class="line"></span><br><span class="line">	md3dDevice-&gt;CreateConstantBufferView(</span><br><span class="line">		&amp;cbvDesc,</span><br><span class="line">		mCbvHeap-&gt;GetCPUDescriptorHandleForHeapStart());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="3-BuildRootSignature"><a href="#3-BuildRootSignature" class="headerlink" title="3. BuildRootSignature"></a>3. BuildRootSignature</h2><p>Root Signature and Descriptor Tables</p>
 <p><strong>root signature 就是声明哪些resource需要被我们使用(既然要使用就一定得绑定到管线上)以及resource是怎么对应到Shader的输入参数的. </strong></p>
+<p><img src="https://www.braynzarsoft.net/image/100210" alt="img"></p>
 <p>在draw call执行前, 我们希望不同的resource能够被绑定到管线上以供不同的着色器使用. resource通过寄存器槽(register slot)绑定.</p>
 <p>root signature 定义了哪些resource需要被绑定以及resource如何映射到着色器的输入. 在创建PSO时, 会先检查root signature是否定义了所有需要被绑定的resource. 不同的draw call 需要不同的着色器, 因此也就需要不同的root signature. 想象一下, 如果所有的着色器都是函数(事实也的确如此), 那么着色器需要的resource就是函数参数, 那么root signature就是一个函数的定义签名. 绑定不同的resource, 着色器输出自然不同. ID3D12RootSignature定义了一个数组形式的root 参数. 这个参数我们暂时只考虑描述符表(descriptor table). 这个table定义了一个在descriptor heap里的连续的descriptor. </p>
 <p>root signature 本身并不进行绑定, 他起到的作用只是一个声明. 只有当ID3D12GraphicsCommandList::SetGraphicsRootDescriptorTable时, 才能绑定到管线.</p>
@@ -147,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="cjrakucox001a4wuujd6ntp50" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="ckh22qn6v000vcgtyqqi20lei" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
@@ -158,11 +165,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Dx12学习笔记_06_渲染Update和Draw
+          Dx12学习笔记_07_优化
         
       </div>
     </a>
@@ -189,7 +196,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
     </div>
   </div>
 
@@ -199,7 +206,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
     </div>
   </div>
 
@@ -208,7 +215,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
     </div>
   </div>
 
@@ -221,11 +228,15 @@
       <ul>
         
           <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
+            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
           </li>
         
           <li>
             <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
           </li>
         
           <li>
@@ -234,10 +245,6 @@
         
           <li>
             <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
           </li>
         
       </ul>
@@ -252,7 +259,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 ANUDING<br>
+      &copy; 2020 ANUDING<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
