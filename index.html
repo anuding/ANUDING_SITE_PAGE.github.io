@@ -1,627 +1,108 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  
 
-  
-  <title>百转千回录</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="百转千回录">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="百转千回录">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="百转千回录">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+    
+        a:link {
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            color: pink;
+        }
+
+        a:active {
+            color: #ccc;
+        }
+
+    </style>
 </head>
 
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">百转千回录</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">迂回绕远 百转千回 | 未来此刻 叠为一体</a>
-        </h2>
-      
+
+    <br />
+    <div style="width:800px; margin: 0 auto;">
+        <a href="/" style="text-decoration:none;">
+            <h3>#百转千回录</h3>
+        </a>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/Gallery">Gallery</a>
-        
-          <a class="main-nav-link" href="/About">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-733-图像渲染" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/11/03/733-图像渲染/" class="article-date">
-  <time datetime="2020-11-03T14:30:05.000Z" itemprop="datePublished">2020-11-03</time>
-</a>
+    <div style="width:800px; margin: 0 auto;">
+    <br />
     
-  </div>
-  <div class="article-inner">
+    <a href="/2020/11/03/733-图像渲染/" style="text-decoration:none;">733.图像渲染</a>
+    <span style="float:right">
+        Tue Nov 03 2020 22:30:05 GMT+0800
+    </span>
+    <br />
     
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" style="text-decoration:none;">Dx12学习笔记_07_优化</a>
+    <span style="float:right">
+        Tue Dec 11 2018 15:06:51 GMT+0800
+    </span>
+    <br />
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
-    </h1>
-  
-
-      </header>
+    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" style="text-decoration:none;">Dx12学习笔记_06_渲染Update和Draw</a>
+    <span style="float:right">
+        Tue Dec 11 2018 15:06:51 GMT+0800
+    </span>
+    <br />
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。<br>给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，让你重新上色这幅图像。<br>为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标相同的相连像素点，……，重复该过程。将所有有记录的像素点的颜色值改为新的颜色值。<br>最后返回经过上色渲染后的图像。</p>
-<p>示例 1:</p>
-<p>输入:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">image = [[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>],[<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>]]</span><br><span class="line">sr = <span class="number">1</span>, sc = <span class="number">1</span>, newColor = <span class="number">2</span></span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">输出:</span><br><span class="line">``` python </span><br><span class="line">[[<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>],[<span class="number">2</span>,<span class="number">2</span>,<span class="number">0</span>],[<span class="number">2</span>,<span class="number">0</span>,<span class="number">1</span>]]</span><br></pre></td></tr></table></figure></p>
-<p>解析: </p>
-<p>在图像的正中间，(坐标(sr,sc)=(1,1)), 在路径上所有符合条件的像素点的颜色都被更改成2。注意，右下角的像素没有更改为2，因为它不是在上下左右四个方向上与初始点相连的像素点。</p>
-<p>注意:</p>
-<ul>
-<li>image 和 image[0] 的长度在范围 [1, 50] 内。</li>
-<li>给出的初始点将满足 0 &lt;= sr &lt; image.length 和 0 &lt;= sc &lt; image[0].length。</li>
-<li>image[i][j] 和 newColor 表示的颜色值在范围 [0, 65535]内。</li>
-</ul>
-<p>来自 <a href="https://leetcode-cn.com/problems/flood-fill/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/flood-fill/</a> </p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>深度优先做法，以坐标点为起点找到周围所有相同颜色的点。涂黑自己，然后进入第一个符合标准的点内继续寻找。深度优先表现出来就是头四个候选点其实只通过第一个就能涂黑大部分了。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">floodFill</span><span class="params">(self, image: List[List[int]], sr: int, sc: int, newColor: int)</span> -&gt; List[List[int]]:</span></span><br><span class="line">        MIN_ROW = <span class="number">0</span></span><br><span class="line">        MIN_COL = <span class="number">0</span></span><br><span class="line">        MAX_ROW = len(image)</span><br><span class="line">        MAX_COL = len(image[<span class="number">0</span>])</span><br><span class="line">        oldColor = image[sr][sc]</span><br><span class="line">        <span class="keyword">if</span>(oldColor==newColor):</span><br><span class="line">            <span class="keyword">return</span> image</span><br><span class="line">        <span class="comment"># up</span></span><br><span class="line">        up_r = sr - <span class="number">1</span></span><br><span class="line">        up_c = sc - <span class="number">0</span></span><br><span class="line">        <span class="comment"># down</span></span><br><span class="line">        down_r = sr + <span class="number">1</span></span><br><span class="line">        down_c = sc - <span class="number">0</span></span><br><span class="line">        <span class="comment"># left</span></span><br><span class="line">        left_r = sr - <span class="number">0</span></span><br><span class="line">        left_c = sc - <span class="number">1</span></span><br><span class="line">        <span class="comment"># right</span></span><br><span class="line">        right_r = sr - <span class="number">0</span></span><br><span class="line">        right_c = sc + <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        image[sr][sc] = newColor</span><br><span class="line">        <span class="keyword">if</span>(up_r&lt;MAX_ROW <span class="keyword">and</span> up_r&gt;=MIN_ROW <span class="keyword">and</span> up_c &lt; MAX_COL <span class="keyword">and</span> up_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[up_r][up_c]==oldColor):</span><br><span class="line">                self.floodFill(image, up_r, up_c, newColor)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span>(down_r&lt;MAX_ROW <span class="keyword">and</span> down_r&gt;=MIN_ROW <span class="keyword">and</span> down_c &lt; MAX_COL <span class="keyword">and</span> down_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[down_r][down_c]==oldColor):</span><br><span class="line">                self.floodFill(image, down_r, down_c, newColor)</span><br><span class="line">        <span class="keyword">if</span>(left_r&lt;MAX_ROW <span class="keyword">and</span> left_r&gt;=MIN_ROW <span class="keyword">and</span> left_c &lt; MAX_COL <span class="keyword">and</span> left_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[left_r][left_c]==oldColor):</span><br><span class="line">                self.floodFill(image, left_r, left_c, newColor)</span><br><span class="line">        <span class="keyword">if</span>(right_r&lt;MAX_ROW <span class="keyword">and</span> right_r&gt;=MIN_ROW <span class="keyword">and</span> right_c &lt; MAX_COL <span class="keyword">and</span> right_c &gt;= MIN_COL):</span><br><span class="line">            <span class="keyword">if</span>(image[right_r][right_c]==oldColor):</span><br><span class="line">                self.floodFill(image, right_r, right_c, newColor)</span><br><span class="line">        <span class="keyword">return</span> image</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/11/03/733-图像渲染/" data-id="ckh22jzoc0000yctyoh8tgyhg" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_07_优化" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" class="article-date">
-  <time datetime="2018-12-11T07:06:51.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
+    <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" style="text-decoration:none;">Dx12学习笔记_05_渲染实战</a>
+    <span style="float:right">
+        Sun Dec 09 2018 22:05:51 GMT+0800
+    </span>
+    <br />
     
-  </div>
-  <div class="article-inner">
+    <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/" style="text-decoration:none;">Dx12学习笔记_04_渲染管线概述</a>
+    <span style="float:right">
+        Fri Nov 02 2018 12:03:51 GMT+0800
+    </span>
+    <br />
     
+    <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" style="text-decoration:none;">Dx12学习笔记_03_初始化下</a>
+    <span style="float:right">
+        Tue Oct 30 2018 20:09:51 GMT+0800
+    </span>
+    <br />
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
-    </h1>
-  
-
-      </header>
+    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" style="text-decoration:none;">Dx12学习笔记_02_初始化上</a>
+    <span style="float:right">
+        Mon Oct 08 2018 20:56:51 GMT+0800
+    </span>
+    <br />
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.</p>
-<p><img src="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" width="50%"></p>
-<p><a href="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" target="_blank" rel="noopener">https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg</a></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_07_优化/" data-id="ckh221v9c000vs0ty8o7umxxu" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_06_渲染Update和Draw" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" class="article-date">
-  <time datetime="2018-12-11T07:06:51.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
+    <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" style="text-decoration:none;">Dx12学习笔记_01_结构设计</a>
+    <span style="float:right">
+        Sun Oct 07 2018 20:56:51 GMT+0800
+    </span>
+    <br />
     
-  </div>
-  <div class="article-inner">
+    <a href="/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" style="text-decoration:none;">Dx12学习笔记_00_窗口</a>
+    <span style="float:right">
+        Thu Oct 04 2018 20:56:51 GMT+0800
+    </span>
+    <br />
     
+    <a href="/2018/10/03/hello-world/" style="text-decoration:none;">Hello World</a>
+    <span style="float:right">
+        Wed Oct 03 2018 16:18:27 GMT+0800
+    </span>
+    <br />
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
-    </h1>
-  
-
-      </header>
+    <a href="/2018/05/18/2018微软创新杯ImagineCup小记/" style="text-decoration:none;">2018微软创新杯ImagineCup小记</a>
+    <span style="float:right">
+        Fri May 18 2018 23:25:33 GMT+0800
+    </span>
+    <br />
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" data-id="ckh221v9f000ys0tyzpl6dntb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_05_渲染实战" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" class="article-date">
-  <time datetime="2018-12-09T14:05:51.000Z" itemprop="datePublished">2018-12-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>经过了一些偏理论性的描述, 下面开始进行渲染管线的代码实现</p>
-<p><img src="https://www.braynzarsoft.net/image/100204" alt="img"></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" data-id="ckh221v97000rs0ty77259mu2" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_04_渲染管线概述" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/" class="article-date">
-  <time datetime="2018-11-02T04:03:51.000Z" itemprop="datePublished">2018-11-02</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>现在开始就要开始渲染了, 希望本部分结束时能达到下图的效果:)</p>
-<p><img src="https://i.postimg.cc/tCp4zHSJ/wire-frame.png" width="50%"></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/" data-id="ckh221v9a000ss0tynm50mgu2" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_03_初始化D3D下" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" class="article-date">
-  <time datetime="2018-10-30T12:09:51.000Z" itemprop="datePublished">2018-10-30</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/">Dx12学习笔记_03_初始化下</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>书接上回, 现在Initial3D已经只剩下一个函数需要完成了,其余的初始化因为和窗口尺寸关系比较大,所以单独放在OnResize()里, 便于响应窗口消息
-        
-          <p class="article-more-link">
-            <a href="/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/30/D3D12/Dx12学习笔记_03_初始化D3D下/" data-id="ckh221v9b000us0tyn1k5e0v0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_02_初始化D3D上" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" class="article-date">
-  <time datetime="2018-10-08T12:56:51.000Z" itemprop="datePublished">2018-10-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/">Dx12学习笔记_02_初始化上</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>DirectX12的初始化对初学者而言是一件较为复杂事情, 在显示出第一个图形之前,要做的准备工作相比其他旧式图形API而言要多了一些. 和Vulkan一样, 作为AMD Mantle的后代之一, 这些新一代的API都变得更加底层. 相对的, 我们会得到更好的效率提升. 初始化的内容按照龙书第四章第三节所述,分为10步, 同时也会穿插一部分第四章前两节的内容
-        
-          <p class="article-more-link">
-            <a href="/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/08/D3D12/Dx12学习笔记_02_初始化D3D上/" data-id="ckh221v95000qs0tyr5wb3d61" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_01_结构设计" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" class="article-date">
-  <time datetime="2018-10-07T12:56:51.000Z" itemprop="datePublished">2018-10-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/">Dx12学习笔记_01_结构设计</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. </p>
-        
-          <p class="article-more-link">
-            <a href="/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/07/D3D12/Dx12学习笔记_01_结构设计/" data-id="ckh221v90000ns0tyardhusr0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-D3D12/Dx12学习笔记_00_窗口" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" class="article-date">
-  <time datetime="2018-10-04T12:56:51.000Z" itemprop="datePublished">2018-10-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/04/D3D12/Dx12学习笔记_00_窗口/">Dx12学习笔记_00_窗口</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-创建窗口类-待完善-需添加流程图片"><a href="#1-创建窗口类-待完善-需添加流程图片" class="headerlink" title="1. 创建窗口类[待完善, 需添加流程图片]"></a>1. 创建窗口类[待完善, 需添加流程图片]</h2><p>(大)部分内容参考 <a href="https://docs.microsoft.com/zh-cn/windows/desktop/learnwin32/creating-a-window" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/windows/desktop/learnwin32/creating-a-window</a></p>
-<p>Every window must be associated with a window class, even if your program only ever creates one instance of that class. It is important to understand that a window class is not a “class” in the C++ sense. </p>
-        
-          <p class="article-more-link">
-            <a href="/2018/10/04/D3D12/Dx12学习笔记_00_窗口/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/D3D12/Dx12学习笔记_00_窗口/" data-id="ckh221v92000os0ty5ok6r2m2" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/03/hello-world/" class="article-date">
-  <time datetime="2018-10-03T08:18:27.346Z" itemprop="datePublished">2018-10-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/03/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/03/hello-world/" data-id="ckh221v890005s0ty9r0wczfi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
-          </li>
-        
-          <li>
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 ANUDING<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/Gallery" class="mobile-nav-link">Gallery</a>
-  
-    <a href="/About" class="mobile-nav-link">About</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
+</div>
 </body>
+
 </html>

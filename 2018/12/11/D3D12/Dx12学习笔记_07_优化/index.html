@@ -1,98 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  
 
-  
-  <title>Dx12学习笔记_07_优化 | 百转千回录</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.  https://i.postimg.cc/jjdMYnRz/screenshot-20">
-<meta name="keywords" content="DirectX,Windows">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Dx12学习笔记_07_优化">
-<meta property="og:url" content="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_07_优化/index.html">
-<meta property="og:site_name" content="百转千回录">
-<meta property="og:description" content="现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.  https://i.postimg.cc/jjdMYnRz/screenshot-20">
-<meta property="og:locale" content="default">
-<meta property="og:image" content="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg">
-<meta property="og:updated_time" content="2019-01-24T12:10:55.517Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dx12学习笔记_07_优化">
-<meta name="twitter:description" content="现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.  https://i.postimg.cc/jjdMYnRz/screenshot-20">
-<meta name="twitter:image" content="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+    
+        a:link {
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            color: pink;
+        }
+
+        a:active {
+            color: #ccc;
+        }
+
+    </style>
 </head>
 
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">百转千回录</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">迂回绕远 百转千回 | 未来此刻 叠为一体</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/Gallery">Gallery</a>
-        
-          <a class="main-nav-link" href="/About">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-D3D12/Dx12学习笔记_07_优化" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" class="article-date">
-  <time datetime="2018-12-11T07:06:51.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Dx12学习笔记_07_优化
-    </h1>
-  
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+    <br />
+    <div style="width:800px; margin: 0 auto;">
+        <a href="/" style="text-decoration:none;">
+            <h3>#百转千回录</h3>
+        </a>
+    </div>
+    <div style="width:800px; margin: 0 auto;">
+    <h4>
+        Dx12学习笔记_07_优化
+    </h4>
+    <h5 >
+        Tue Dec 11 2018 15:06:51 GMT+0800
+    </h5>
+</br>
+    <p>
         <p>现在, 我们已经可以显示出一个3D的彩色立方体了, 可是这个程序里仍然存在一些不完美的地方, 比如每次draw call都需要清空command queue, 比如每时每刻都在更新constant buffer… 这一篇中, 我们将尽可能解决这些问题, 顺便完成一个简易的基本图形生成器,这样就无需额外建模了.</p>
 <p><img src="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" width="50%"></p>
 <p><a href="https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg" target="_blank" rel="noopener">https://i.postimg.cc/jjdMYnRz/screenshot-2018-12-14-at-19-55-12.jpg</a></p>
@@ -112,144 +61,8 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TestApp::UpdateMainPassCB(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">auto</span> currPassCB = mCurrFrameResource-&gt;PassCB.get();<span class="comment">//不做检查, 每帧更新</span></span><br><span class="line">	currPassCB-&gt;CopyData(<span class="number">0</span>, mMainPassCB);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>所以还需要两种不同的root signature, 前面讲过, root signature是用来是声明哪些resource需要被我们使用(既然要使用就一定得绑定到管线上)以及resource是怎么对应到Shader的输入参数的. </p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_07_优化/" data-id="ckh221v9c000vs0ty8o7umxxu" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2020/11/03/733-图像渲染/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          733.图像渲染
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Dx12学习笔记_06_渲染Update和Draw</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
-          </li>
-        
-          <li>
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 ANUDING<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/Gallery" class="mobile-nav-link">Gallery</a>
-  
-    <a href="/About" class="mobile-nav-link">About</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
+    </p>
+</div>
 </body>
+
 </html>

@@ -1,240 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  
 
-  
-  <title>Dx12学习笔记_06_渲染Update和Draw | 百转千回录</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了">
-<meta name="keywords" content="DirectX,Windows">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Dx12学习笔记_06_渲染Update和Draw">
-<meta property="og:url" content="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/index.html">
-<meta property="og:site_name" content="百转千回录">
-<meta property="og:description" content="现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-11T08:38:24.344Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dx12学习笔记_06_渲染Update和Draw">
-<meta name="twitter:description" content="现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+    
+        a:link {
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            color: pink;
+        }
+
+        a:active {
+            color: #ccc;
+        }
+
+    </style>
 </head>
 
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">百转千回录</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">迂回绕远 百转千回 | 未来此刻 叠为一体</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-          <a class="main-nav-link" href="/Gallery">Gallery</a>
-        
-          <a class="main-nav-link" href="/About">About</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-D3D12/Dx12学习笔记_06_渲染Update和Draw" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" class="article-date">
-  <time datetime="2018-12-11T07:06:51.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Dx12学习笔记_06_渲染Update和Draw
-    </h1>
-  
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+    <br />
+    <div style="width:800px; margin: 0 auto;">
+        <a href="/" style="text-decoration:none;">
+            <h3>#百转千回录</h3>
+        </a>
+    </div>
+    <div style="width:800px; margin: 0 auto;">
+    <h4>
+        Dx12学习笔记_06_渲染Update和Draw
+    </h4>
+    <h5 >
+        Tue Dec 11 2018 15:06:51 GMT+0800
+    </h5>
+</br>
+    <p>
         <p>现在, 我们只要完成这两个函数, 就可以看到我们期待的立方体了</p>
 <a id="more"></a>
 <h2 id="TestApp-Update-const-GameTimer-amp-gt"><a href="#TestApp-Update-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Update(const GameTimer&amp; gt)"></a>TestApp::Update(const GameTimer&amp; gt)</h2><p>这个函数里需要做的,就是不断生成新的world view projection 矩阵, 其构建矩阵的参数在鼠标运动的函数里更新, 而鼠标运动的函数又在D3DApp的MsgProc里进行Windows消息响应时被调用. </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BoxApp::Update(<span class="keyword">const</span> GameTimer&amp; gt)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Convert Spherical to Cartesian coordinates.</span></span><br><span class="line">    <span class="keyword">float</span> x = mRadius*sinf(mPhi)*cosf(mTheta);</span><br><span class="line">    <span class="keyword">float</span> z = mRadius*sinf(mPhi)*sinf(mTheta);</span><br><span class="line">    <span class="keyword">float</span> y = mRadius*cosf(mPhi);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Build the view matrix.</span></span><br><span class="line">    XMVECTOR pos = XMVectorSet(x, y, z, <span class="number">1.0f</span>);</span><br><span class="line">    XMVECTOR target = XMVectorZero();</span><br><span class="line">    XMVECTOR up = XMVectorSet(<span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line"></span><br><span class="line">    XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</span><br><span class="line">    XMStoreFloat4x4(&amp;mView, view);</span><br><span class="line"></span><br><span class="line">    XMMATRIX world = XMLoadFloat4x4(&amp;mWorld);</span><br><span class="line">    XMMATRIX proj = XMLoadFloat4x4(&amp;mProj);</span><br><span class="line">    XMMATRIX worldViewProj = world*view*proj;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Update the constant buffer with the latest worldViewProj matrix.</span></span><br><span class="line">	ObjectConstants objConstants;</span><br><span class="line">    XMStoreFloat4x4(&amp;objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));</span><br><span class="line">    mObjectCB-&gt;CopyData(<span class="number">0</span>, objConstants);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>构建好三个矩阵后, 直接相乘构成变换矩阵, 之后利用mObjectCB更新constant buffer.</p>
 <h2 id="TestApp-Draw-const-GameTimer-amp-gt"><a href="#TestApp-Draw-const-GameTimer-amp-gt" class="headerlink" title="TestApp::Draw(const GameTimer&amp; gt)"></a>TestApp::Draw(const GameTimer&amp; gt)</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/" data-id="ckh221v9f000ys0tyzpl6dntb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Dx12学习笔记_07_优化
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Dx12学习笔记_05_渲染实战</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DirectX/">DirectX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft/">Microsoft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创新杯/">创新杯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/周记/">周记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像处理/">图像处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编程/">编程</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/DirectX/" style="font-size: 20px;">DirectX</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/创新杯/" style="font-size: 10px;">创新杯</a> <a href="/tags/周记/" style="font-size: 15px;">周记</a> <a href="/tags/图像处理/" style="font-size: 10px;">图像处理</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/11/03/733-图像渲染/">733.图像渲染</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_07_优化/">Dx12学习笔记_07_优化</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/11/D3D12/Dx12学习笔记_06_渲染Update和Draw/">Dx12学习笔记_06_渲染Update和Draw</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/09/D3D12/Dx12学习笔记_05_渲染实战/">Dx12学习笔记_05_渲染实战</a>
-          </li>
-        
-          <li>
-            <a href="/2018/11/02/D3D12/Dx12学习笔记_04_渲染管线概述/">Dx12学习笔记_04_渲染管线概述</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 ANUDING<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/Gallery" class="mobile-nav-link">Gallery</a>
-  
-    <a href="/About" class="mobile-nav-link">About</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
+    </p>
+</div>
 </body>
+
 </html>
