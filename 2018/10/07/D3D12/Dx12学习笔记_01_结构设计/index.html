@@ -4,8 +4,12 @@
 <head>
     <title></title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900">
     <style type="text/css">
-    
+        body {
+            font-family: "Noto Sans SC";
+        }
+
         a:link {
             color: black;
         }
@@ -21,7 +25,6 @@
         a:active {
             color: #ccc;
         }
-
     </style>
 </head>
 
@@ -32,14 +35,21 @@
         <a href="/" style="text-decoration:none;">
             <h3>#百转千回录</h3>
         </a>
+        <a href="/" style="text-decoration:none;">
+            <span style="font-weight: normal;">作品</span>
+        </a>
+        <a href="/" style="text-decoration:none;">
+            <span style="font-weight: normal;">关于</span>
+        </a>
+        <HR>
     </div>
     <div style="width:800px; margin: 0 auto;">
     <h4>
         Dx12学习笔记_01_结构设计
     </h4>
-    <h5 >
+    <p style="font-weight: lighter;">
         Sun Oct 07 2018 20:56:51 GMT+0800
-    </h5>
+    </p>
 </br>
     <p>
         <p>上一篇文简单讲了一下如何创建一个WIN32窗口程序,以后DX12的学习将在这个基础上展开. 但是现在并不能直接在这个程序上进行DX12的初始化编码, 因为DX12的初始化编码过程略显繁杂, 如果都挤在一个文件里面会对后续的功能添加造成麻烦. 应该利用C++的抽象等特性, 将初始化的部分隔离出来. </p>
@@ -50,6 +60,12 @@
 
     </p>
 </div>
+    <footer style="position: absolute;    bottom: 0;  width: 99%;">
+        <div style="text-align: center;">
+            <p>powered by: Hexo | theme: anuding.github.io.template</p>
+        </div>
+
+    </footer>
 </body>
 
 </html>
